@@ -78,6 +78,7 @@ def create_and_send_email(
     if attachments:
         for file_path in attachments:
             if not os.path.isfile(file_path):
+                print(os.getcwd())
                 raise FileNotFoundError(f"Attachment file not found: {file_path}")
             
             # Determine content type
@@ -134,23 +135,24 @@ def create_and_send_email(
 # Example usage
 if __name__ == '__main__':
     # Simple email without attachments
-    print("Sending simple email...")
-    response = create_and_send_email(
-        from_email="sender@example.com",
-        to_email="recipient@example.com"
-    )
-    print(f"Status: {response.status_code}")
-    print(f"Response: {response.text}")
-    print()
-    
-    # Email with attachments (uncomment and provide actual file paths)
-    # print("Sending email with attachments...")
+    # print("Sending simple email...")
     # response = create_and_send_email(
     #     from_email="sender@example.com",
-    #     to_email="recipient@example.com",
-    #     subject="Invoice attached",
-    #     body="Please find the invoice and photo attached.",
-    #     attachments=["path/to/invoice.pdf", "path/to/photo.jpg"]
+    #     to_email="recipient@example.com"
     # )
     # print(f"Status: {response.status_code}")
     # print(f"Response: {response.text}")
+    # print()
+    
+    # Email with attachments (uncomment and provide actual file paths)
+    print("Sending email with attachments...")
+    response = create_and_send_email(
+        from_email="sender@example.com",
+        to_email="recipient@example.com",
+        subject="Invoice attached",
+        body="Please find the invoice and photo attached.",
+        # attachments=["./test_data/test_invoice_1.pdf", "./test_data/test_invoice_1.jpg"]
+        attachments=["./test_data/test_invoice_1.pdf"]
+    )
+    print(f"Status: {response.status_code}")
+    print(f"Response: {response.text}")
