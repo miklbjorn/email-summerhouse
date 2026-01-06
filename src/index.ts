@@ -36,6 +36,7 @@ import {
 import { generateReplyEmail } from './utils/emailReply';
 import { getAllInvoices, getInvoiceById, markInvoiceAsPaid } from './api/invoices';
 import { serveFileFromR2 } from './api/files';
+import { verifyAccessJWT } from './utils/auth';
 
 export default {
   async email(
@@ -228,13 +229,23 @@ async function handleApiRequest(
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, PATCH, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Cf-Access-Jwt-Assertion',
     'Content-Type': 'application/json',
   };
 
   // Handle CORS preflight
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Verify Cloudflare Access JWT
+  const authResult = await verifyAccessJWT(request, env.CF_ACCESS_TEAM_NAME);
+  if (!authResult.authenticated) {
+    console.warn('Authentication failed:', authResult.error);
+    return new Response(JSON.stringify({ error: 'Unauthorized', details: authResult.error }), {
+      status: 401,
+      headers: corsHeaders,
+    });
   }
 
   try {
