@@ -513,3 +513,112 @@ body {
   color: #2563eb;
   text-decoration: underline;
 }
+
+/* Image Viewer */
+.image-viewer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.image-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0.5rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+
+.image-zoom {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.image-zoom button {
+  padding: 0.25rem 0.5rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  min-width: 2rem;
+}
+
+.image-zoom button:hover:not(:disabled) {
+  background: #eee;
+}
+
+.image-zoom button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.image-zoom span {
+  font-size: 0.7rem;
+  color: #666;
+  min-width: 3rem;
+  text-align: center;
+}
+
+.image-fit-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.image-fit-controls button {
+  padding: 0.25rem 0.5rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.image-fit-controls button:hover {
+  background: #eee;
+}
+
+.image-fit-controls button.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.image-viewport {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e5e5e5;
+  border-radius: 4px;
+  position: relative;
+}
+
+.image-viewport.pannable {
+  cursor: grab;
+}
+
+.image-viewport.dragging {
+  cursor: grabbing;
+}
+
+.image-viewport img {
+  max-width: none;
+  max-height: none;
+  user-select: none;
+}
+
+.image-viewport img.fit-mode {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.image-viewport img.actual-mode {
+  transform-origin: center center;
+}

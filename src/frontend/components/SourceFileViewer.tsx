@@ -1,4 +1,5 @@
 import { PDFViewer } from './PDFViewer';
+import { ImageViewer } from './ImageViewer';
 
 interface Props {
   blobUri: string;
@@ -25,7 +26,7 @@ export function SourceFileViewer({ blobUri, onClose }: Props) {
         </div>
         <div className="file-viewer-content">
           {isPdf && <PDFViewer fileUrl={fileUrl} />}
-          {isImage && <img src={fileUrl} alt={filename} />}
+          {isImage && <ImageViewer fileUrl={fileUrl} filename={filename} />}
           {!isPdf && !isImage && (
             <div className="empty-state">
               <p>Preview not available for this file type.</p>
