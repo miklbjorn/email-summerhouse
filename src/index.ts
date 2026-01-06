@@ -34,6 +34,8 @@ import {
   insertInvoice,
 } from './utils/database';
 import { generateReplyEmail } from './utils/emailReply';
+import { getAllInvoices, getInvoiceById, markInvoiceAsPaid } from './api/invoices';
+import { serveFileFromR2 } from './api/files';
 
 export default {
   async email(
@@ -204,6 +206,97 @@ export default {
   },
 
   async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
-    return new Response('Email Worker - Invoice Processing System');
+    const url = new URL(request.url);
+    const path = url.pathname;
+
+    // API routes
+    if (path.startsWith('/api/')) {
+      return handleApiRequest(request, env, path, url);
+    }
+
+    // Static assets handled by wrangler assets binding
+    return new Response('Not found', { status: 404 });
   },
 };
+
+async function handleApiRequest(
+  request: Request,
+  env: any,
+  path: string,
+  url: URL
+): Promise<Response> {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, PATCH, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Content-Type': 'application/json',
+  };
+
+  // Handle CORS preflight
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    // Ensure database is initialized
+    await initializeDatabase(env.DB);
+
+    // GET /api/invoices - List all invoices
+    if (path === '/api/invoices' && request.method === 'GET') {
+      const unpaidOnly = url.searchParams.get('unpaidOnly') === 'true';
+      const limit = url.searchParams.get('limit');
+      const offset = url.searchParams.get('offset');
+
+      const invoices = await getAllInvoices(env.DB, {
+        unpaidOnly,
+        limit: limit ? parseInt(limit) : undefined,
+        offset: offset ? parseInt(offset) : undefined,
+      });
+
+      return new Response(JSON.stringify(invoices), { headers: corsHeaders });
+    }
+
+    // GET /api/invoices/:id - Get single invoice
+    const invoiceMatch = path.match(/^\/api\/invoices\/(\d+)$/);
+    if (invoiceMatch && request.method === 'GET') {
+      const invoice = await getInvoiceById(env.DB, parseInt(invoiceMatch[1]));
+      if (!invoice) {
+        return new Response(JSON.stringify({ error: 'Not found' }), {
+          status: 404,
+          headers: corsHeaders,
+        });
+      }
+      return new Response(JSON.stringify(invoice), { headers: corsHeaders });
+    }
+
+    // PATCH /api/invoices/:id - Update invoice (mark paid)
+    if (invoiceMatch && request.method === 'PATCH') {
+      const body = await request.json() as { paid?: boolean };
+      if (body.paid === true) {
+        await markInvoiceAsPaid(env.DB, parseInt(invoiceMatch[1]));
+        return new Response(JSON.stringify({ success: true }), { headers: corsHeaders });
+      }
+      return new Response(JSON.stringify({ error: 'Invalid request' }), {
+        status: 400,
+        headers: corsHeaders,
+      });
+    }
+
+    // GET /api/files/* - Serve files from R2
+    if (path.startsWith('/api/files/') && request.method === 'GET') {
+      const filePath = decodeURIComponent(path.replace('/api/files/', ''));
+      return serveFileFromR2(env.R2, filePath);
+    }
+
+    return new Response(JSON.stringify({ error: 'Not found' }), {
+      status: 404,
+      headers: corsHeaders,
+    });
+  } catch (error) {
+    console.error('API error:', error);
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      status: 500,
+      headers: corsHeaders,
+    });
+  }
+}
