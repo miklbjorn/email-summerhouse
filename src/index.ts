@@ -202,8 +202,8 @@ export default {
       throw error;
     }
   },
-};
 
-export async function fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
-  return new Response('Email Worker - Invoice Processing System');
-}
+  async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
+    return new Response('Email Worker - Invoice Processing System');
+  },
+};
