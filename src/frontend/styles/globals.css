@@ -12,14 +12,15 @@ body {
 }
 
 .layout {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .layout h1 {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
   color: #1a1a1a;
+  font-size: 1.25rem;
 }
 
 /* Invoice List */
@@ -76,7 +77,112 @@ body {
   color: #92400e;
 }
 
-/* Invoice Detail */
+/* Invoice Detail - Side by Side Layout */
+.invoice-detail-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1rem;
+  height: calc(100vh - 6rem);
+}
+
+.invoice-info-panel {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  overflow-y: auto;
+  font-size: 0.85rem;
+}
+
+.source-file-panel {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.source-file-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+  background: #f9f9f9;
+}
+
+.source-file-tab {
+  padding: 0.35rem 0.75rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.source-file-tab:hover {
+  background: #f5f5f5;
+}
+
+.source-file-tab.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.download-link {
+  margin-left: auto;
+  padding: 0.35rem 0.75rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-decoration: none;
+  color: #333;
+}
+
+.download-link:hover {
+  background: #eee;
+}
+
+.source-file-content {
+  flex: 1;
+  overflow: auto;
+  padding: 0.5rem;
+  background: #e5e5e5;
+}
+
+.image-viewer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100%;
+}
+
+.image-viewer img {
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.unsupported-file,
+.no-file-selected,
+.no-source-files {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  gap: 1rem;
+}
+
+.unsupported-file a,
+.no-source-files a {
+  color: #2563eb;
+}
+
+/* Legacy class for backwards compat */
 .invoice-detail {
   background: white;
   border-radius: 8px;
@@ -87,14 +193,14 @@ body {
 .back-button {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  padding: 0.5rem 1rem;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+  padding: 0.35rem 0.75rem;
   background: #f5f5f5;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #333;
 }
 
@@ -103,47 +209,50 @@ body {
 }
 
 .detail-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .detail-section h2 {
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: #666;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
   border-bottom: 1px solid #eee;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .detail-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
 }
 
 .detail-item {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .detail-item dt {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #888;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 .detail-item dd {
-  font-size: 1rem;
+  font-size: 0.85rem;
   color: #333;
 }
 
 .items-list {
   list-style: none;
+  font-size: 0.8rem;
 }
 
 .items-list li {
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -176,14 +285,14 @@ body {
 .mark-paid-button {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
   background: #059669;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 500;
   transition: background 0.15s;
 }
@@ -284,4 +393,123 @@ body {
   text-align: center;
   padding: 3rem;
   color: #666;
+}
+
+/* PDF Viewer */
+.pdf-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pdf-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0.5rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+
+.pdf-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pdf-nav button {
+  padding: 0.25rem 0.5rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.pdf-nav button:hover:not(:disabled) {
+  background: #eee;
+}
+
+.pdf-nav button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pdf-nav span {
+  font-size: 0.7rem;
+  color: #666;
+}
+
+.pdf-zoom {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pdf-zoom button {
+  padding: 0.25rem 0.5rem;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  min-width: 2rem;
+}
+
+.pdf-zoom button:hover:not(:disabled) {
+  background: #eee;
+}
+
+.pdf-zoom button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pdf-document-container {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  background: #e5e5e5;
+  border-radius: 4px;
+}
+
+.pdf-document-container .react-pdf__Document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pdf-document-container .react-pdf__Page {
+  margin: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pdf-document-container .react-pdf__Page canvas {
+  display: block;
+}
+
+.pdf-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.pdf-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1rem;
+  color: #666;
+}
+
+.pdf-error a {
+  color: #2563eb;
+  text-decoration: underline;
 }

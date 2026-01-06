@@ -1,3 +1,5 @@
+import { PDFViewer } from './PDFViewer';
+
 interface Props {
   blobUri: string;
   onClose: () => void;
@@ -22,7 +24,7 @@ export function SourceFileViewer({ blobUri, onClose }: Props) {
           </div>
         </div>
         <div className="file-viewer-content">
-          {isPdf && <iframe src={fileUrl} title="PDF viewer" />}
+          {isPdf && <PDFViewer fileUrl={fileUrl} />}
           {isImage && <img src={fileUrl} alt={filename} />}
           {!isPdf && !isImage && (
             <div className="empty-state">
