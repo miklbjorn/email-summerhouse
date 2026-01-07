@@ -622,3 +622,41 @@ body {
 .image-viewport img.actual-mode {
   transform-origin: center center;
 }
+
+/* Copyable Field */
+.copyable-value {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.copy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #888;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+}
+
+.copyable-value:hover .copy-button {
+  opacity: 1;
+}
+
+.copy-button:hover {
+  background: #e5e5e5;
+  color: #333;
+}
+
+.copy-button:active {
+  background: #d5d5d5;
+}
+
+.copy-button svg {
+  display: block;
+}

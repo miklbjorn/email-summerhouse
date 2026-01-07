@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PDFViewer } from './PDFViewer';
 import { ImageViewer } from './ImageViewer';
+import { CopyableField } from './CopyableField';
 import type { InvoiceDetail as InvoiceDetailType } from '../types/invoice';
 
 interface Props {
@@ -74,22 +75,18 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid }: Props) {
         <div className="detail-section">
           <h2>Invoice Details</h2>
           <dl className="detail-grid">
-            <div className="detail-item">
-              <dt>Supplier</dt>
-              <dd>{invoice.supplier || '-'}</dd>
-            </div>
-            <div className="detail-item">
-              <dt>Invoice ID</dt>
-              <dd>{invoice.invoice_id || '-'}</dd>
-            </div>
-            <div className="detail-item">
-              <dt>Amount</dt>
-              <dd>{formatCurrency(invoice.amount)}</dd>
-            </div>
-            <div className="detail-item">
-              <dt>Due Date</dt>
-              <dd>{formatDate(invoice.last_payment_date)}</dd>
-            </div>
+            <CopyableField label="Supplier" value={invoice.supplier} />
+            <CopyableField label="Invoice ID" value={invoice.invoice_id} />
+            <CopyableField
+              label="Amount"
+              value={invoice.amount?.toString() ?? null}
+              formatValue={(v) => formatCurrency(parseFloat(v))}
+            />
+            <CopyableField
+              label="Due Date"
+              value={invoice.last_payment_date}
+              formatValue={formatDate}
+            />
             <div className="detail-item">
               <dt>Status</dt>
               <dd>
@@ -108,22 +105,10 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid }: Props) {
         <div className="detail-section">
           <h2>Payment Information</h2>
           <dl className="detail-grid">
-            <div className="detail-item">
-              <dt>IBAN</dt>
-              <dd>{invoice.account_to_pay_IBAN || '-'}</dd>
-            </div>
-            <div className="detail-item">
-              <dt>BIC</dt>
-              <dd>{invoice.account_to_pay_BIC || '-'}</dd>
-            </div>
-            <div className="detail-item">
-              <dt>Registration Number</dt>
-              <dd>{invoice.account_to_pay_REG || '-'}</dd>
-            </div>
-            <div className="detail-item">
-              <dt>Account Number</dt>
-              <dd>{invoice.account_to_pay_ACCOUNT_NUMBER || '-'}</dd>
-            </div>
+            <CopyableField label="IBAN" value={invoice.account_to_pay_IBAN} />
+            <CopyableField label="BIC" value={invoice.account_to_pay_BIC} />
+            <CopyableField label="REG" value={invoice.account_to_pay_REG} />
+            <CopyableField label="Account Number" value={invoice.account_to_pay_ACCOUNT_NUMBER} />
           </dl>
         </div>
 
