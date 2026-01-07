@@ -105,40 +105,27 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid }: Props) {
           </dl>
         </div>
 
-        {(invoice.account_to_pay_IBAN ||
-          invoice.account_to_pay_BIC ||
-          invoice.account_to_pay_REG ||
-          invoice.account_to_pay_ACCOUNT_NUMBER) && (
-          <div className="detail-section">
-            <h2>Payment Information</h2>
-            <dl className="detail-grid">
-              {invoice.account_to_pay_IBAN && (
-                <div className="detail-item">
-                  <dt>IBAN</dt>
-                  <dd>{invoice.account_to_pay_IBAN}</dd>
-                </div>
-              )}
-              {invoice.account_to_pay_BIC && (
-                <div className="detail-item">
-                  <dt>BIC</dt>
-                  <dd>{invoice.account_to_pay_BIC}</dd>
-                </div>
-              )}
-              {invoice.account_to_pay_REG && (
-                <div className="detail-item">
-                  <dt>REG</dt>
-                  <dd>{invoice.account_to_pay_REG}</dd>
-                </div>
-              )}
-              {invoice.account_to_pay_ACCOUNT_NUMBER && (
-                <div className="detail-item">
-                  <dt>Account Number</dt>
-                  <dd>{invoice.account_to_pay_ACCOUNT_NUMBER}</dd>
-                </div>
-              )}
-            </dl>
-          </div>
-        )}
+        <div className="detail-section">
+          <h2>Payment Information</h2>
+          <dl className="detail-grid">
+            <div className="detail-item">
+              <dt>IBAN</dt>
+              <dd>{invoice.account_to_pay_IBAN || '-'}</dd>
+            </div>
+            <div className="detail-item">
+              <dt>BIC</dt>
+              <dd>{invoice.account_to_pay_BIC || '-'}</dd>
+            </div>
+            <div className="detail-item">
+              <dt>Registration Number</dt>
+              <dd>{invoice.account_to_pay_REG || '-'}</dd>
+            </div>
+            <div className="detail-item">
+              <dt>Account Number</dt>
+              <dd>{invoice.account_to_pay_ACCOUNT_NUMBER || '-'}</dd>
+            </div>
+          </dl>
+        </div>
 
         {items.length > 0 && (
           <div className="detail-section">
