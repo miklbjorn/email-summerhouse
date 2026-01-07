@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { PDFViewer } from './PDFViewer';
+import { ImageViewer } from './ImageViewer';
 import type { InvoiceDetail as InvoiceDetailType } from '../types/invoice';
 
 interface Props {
@@ -186,9 +187,7 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid }: Props) {
             <div className="source-file-content">
               {isPdf && fileUrl && <PDFViewer fileUrl={fileUrl} />}
               {isImage && fileUrl && (
-                <div className="image-viewer">
-                  <img src={fileUrl} alt={selectedFilename} />
-                </div>
+                <ImageViewer fileUrl={fileUrl} filename={selectedFilename} />
               )}
               {!isPdf && !isImage && fileUrl && (
                 <div className="unsupported-file">
