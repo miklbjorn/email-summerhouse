@@ -21,11 +21,11 @@ export function generateReplyEmail(
   }
   
   msg.setSender({
-    name: 'Invoice Processing System',
-    addr: 'bjoerkelund@mikkelbjoern.com',
+    name: 'Faktura Galore',
+    addr: 'regninger.bjoerkelund@mikkelbjoern.com',
   });
   msg.setRecipient(originalFrom);
-  msg.setSubject('Invoice Processed Successfully');
+  msg.setSubject('Din faktura er gemt!');
   
   const summaryText = generateSummaryText(extraction);
   
@@ -35,7 +35,7 @@ export function generateReplyEmail(
   });
 
   const replyMessage = new EmailMessage(
-    'bjoerkelund@mikkelbjoern.com',
+    'regninger.bjoerkelund@mikkelbjoern.com',
     originalFrom,
     msg.asRaw()
   );
@@ -87,7 +87,10 @@ Jeg har behandlet din faktura og ekstraheret følgende information:
 - Faktura ID: ${extraction.invoiceId || 'Ikke angivet'}
 - Leverandør: ${extraction.supplier || 'Ikke angivet'}
 - Beløb: ${amountFormatted}
-- Betalingskonto: ${accountInfo}
+- Konto - IBAN: ${extraction.accountIBAN || 'Ikke angivet'}
+- Konto - BIC: ${extraction.accountBIC || 'Ikke angivet'}
+- Konto - Reg. nummer: ${extraction.accountREG || 'Ikke angivet'}
+- Konto - Kontonummer: ${extraction.accountNumber || 'Ikke angivet'}
 - ${paymentDateText}
 - Kildefil: ${extraction.sourceFileReference || 'Ikke angivet'}
 
@@ -95,8 +98,66 @@ Jeg har behandlet din faktura og ekstraheret følgende information:
 ${itemsList}
 
 Fakturaen er nu gemt i systemet og klar til videre behandling.
+Tjek dem her: 
+
+Med venlig hilsen,
+Faktura Galore AI.`;
+}
+
+/**
+ * Generate an error reply email when invoice processing fails
+ */
+export function generateErrorReplyEmail(
+  originalMessageId: string | null,
+  originalFrom: string,
+  errorMessage?: string
+): EmailMessage {
+  const msg = createMimeMessage();
+  
+  if (originalMessageId) {
+    msg.setHeader('In-Reply-To', originalMessageId);
+  }
+  
+  msg.setSender({
+    name: 'Faktura Galore',
+    addr: 'regninger.bjoerkelund@mikkelbjoern.com',
+  });
+  msg.setRecipient(originalFrom);
+  msg.setSubject('Vi fik ikke tygget din faktura igemmen. Øv!');
+  
+  const errorText = generateErrorText(errorMessage);
+  
+  msg.addMessage({
+    contentType: 'text/plain',
+    data: errorText,
+  });
+
+  const replyMessage = new EmailMessage(
+    'regninger.bjoerkelund@mikkelbjoern.com',
+    originalFrom,
+    msg.asRaw()
+  );
+
+  console.log('Generated error reply email:', {
+    to: originalFrom,
+    originalMessageId,
+  });
+
+  return replyMessage;
+}
+
+/**
+ * Generate error message text
+ */
+function generateErrorText(errorMessage?: string): string {
+  const details = errorMessage
+    ? `\nFejldetaljer: ${errorMessage}`
+    : '';
+
+  return `Beklager, der opstod en fejl under behandlingen af din faktura.
+
+Vi kunne ikke behandle den vedhæftede faktura. Prøv venligst at sende den igen, eller kontakt support hvis problemet fortsætter.${details}
 
 Med venlig hilsen,
 Invoice Processing System`;
 }
-

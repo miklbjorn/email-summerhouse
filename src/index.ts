@@ -33,7 +33,7 @@ import {
   initializeDatabase,
   insertInvoice,
 } from './utils/database';
-import { generateReplyEmail } from './utils/emailReply';
+import { generateReplyEmail, generateErrorReplyEmail } from './utils/email-replies';
 import { getAllInvoices, getInvoiceById, markInvoiceAsPaid } from './api/invoices';
 import { serveFileFromR2 } from './api/files';
 import { verifyAccessJWT } from './utils/auth';
@@ -175,21 +175,11 @@ export default {
       // Try to send an error reply using already-parsed email data
       try {
         const originalMessageId = message.headers.get('Message-ID');
-        replyMessage = generateReplyEmail(
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        replyMessage = generateErrorReplyEmail(
           originalMessageId,
           fromAddress,
-          {
-            items: [],
-            supplier: 'Error',
-            amount: null,
-            invoiceId: 'Error',
-            accountIBAN: null,
-            accountBIC: null,
-            accountREG: null,
-            accountNumber: null,
-            lastPaymentDate: null,
-            sourceFileReference: 'N/A',
-          }
+          errorMsg
         );
       } catch (replyError) {
         console.error('Failed to construct a reply message:', replyError);
