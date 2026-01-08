@@ -47,7 +47,8 @@
 		{
 			"binding": "DB",
 			"database_name": "bjrk-d1",
-			"database_id": "34941884-5c1f-433b-ade1-983583df495f"
+			"database_id": "34941884-5c1f-433b-ade1-983583df495f",
+			"migrations_dir": "migrations"
 		}
 	],
 	"routes": [
