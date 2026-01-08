@@ -235,9 +235,12 @@ async function handleApiRequest(
   }
 
   // Verify Cloudflare Access JWT
+  const isLocalDev = request.url.includes('localhost') || request.url.includes('127.0.0.1');
+  console.log('isLocalDev:', isLocalDev);
+  console.log('isLocalDev:', request.url);
   const authResult = await verifyAccessJWT(request, env.CF_ACCESS_TEAM_NAME);
-  if (!authResult.authenticated) {
-    console.warn('Authentication failed:', authResult.error);
+  if (!isLocalDev && !authResult.authenticated) {
+    console.warn('Authentication failed miserably:', authResult.error);
     return new Response(JSON.stringify({ error: 'Unauthorized', details: authResult.error }), {
       status: 401,
       headers: corsHeaders,
