@@ -98,10 +98,12 @@ Jeg har behandlet din faktura og ekstraheret følgende information:
 ${itemsList}
 
 Fakturaen er nu gemt i systemet og klar til videre behandling.
-Tjek dem her: 
+Tjek dem her: https://regninger.mikkelbjoern.com
 
 Med venlig hilsen,
-Faktura Galore AI.`;
+Faktura Galore AI.
+
+`;
 }
 
 /**
@@ -159,5 +161,7 @@ function generateErrorText(errorMessage?: string): string {
 Vi kunne ikke behandle den vedhæftede faktura. Prøv venligst at sende den igen, eller kontakt support hvis problemet fortsætter.${details}
 
 Med venlig hilsen,
-Invoice Processing System`;
+Faktura Galore AI.
+
+`;
 }
