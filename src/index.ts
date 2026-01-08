@@ -98,7 +98,8 @@ export default {
         },
         attachments: attachmentData,
       };
-
+      
+      console.log('Persisting to bronze layer:', bronzeData);
       const bronzePaths = await persistToBronzeLayer(env.R2, bronzeData, timestamp);
       console.log('Persisted to bronze layer:', bronzePaths);
 
@@ -117,6 +118,8 @@ export default {
         markdownFiles,
       };
 
+      console.log('Persisting to silver layer:', silverData);
+
       const silverPaths = await persistToSilverLayer(env.R2, silverData, timestamp);
       console.log('Persisted to silver layer:', silverPaths);
 
@@ -129,6 +132,7 @@ export default {
         extractedData: extraction,
       };
 
+      console.log('Persisting to gold layer:', goldData);
       const goldPath = await persistToGoldLayer(env.R2, goldData, timestamp);
       console.log('Persisted to gold layer:', goldPath);
 
