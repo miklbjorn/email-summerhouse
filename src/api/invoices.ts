@@ -87,3 +87,32 @@ export async function markInvoiceAsPaid(
 
   return result.success;
 }
+
+export async function deleteInvoice(
+  db: D1Database,
+  id: number
+): Promise<boolean> {
+  // First get the invoice to find its message_id
+  const invoice = await db
+    .prepare(`SELECT message_id FROM invoices WHERE id = ?`)
+    .bind(id)
+    .first<{ message_id: string }>();
+
+  if (!invoice) {
+    return false;
+  }
+
+  // Delete associated source files first (foreign key constraint)
+  await db
+    .prepare(`DELETE FROM source_files WHERE message_id = ?`)
+    .bind(invoice.message_id)
+    .run();
+
+  // Delete the invoice
+  const result = await db
+    .prepare(`DELETE FROM invoices WHERE id = ?`)
+    .bind(id)
+    .run();
+
+  return result.success;
+}
