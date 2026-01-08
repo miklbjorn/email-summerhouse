@@ -3,6 +3,7 @@ export interface InvoiceListItem {
   message_id: string;
   supplier: string | null;
   amount: number | null;
+  currency: string | null;
   invoice_id: string | null;
   last_payment_date: string | null;
   paid: number;

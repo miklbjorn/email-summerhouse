@@ -10,6 +10,7 @@ export interface InvoiceExtraction {
   items: string[];
   supplier: string | null;
   amount: number | null;
+  currency: string | null;
   invoiceId: string | null;
   accountIBAN: string | null;
   accountBIC: string | null;
@@ -142,6 +143,7 @@ Required fields (all can be null if not found):
 - items: array of strings describing what items/services are covered (can be empty array)
 - supplier: the name of the supplier/company that sent the invoice
 - amount: the total amount to pay (as a number)
+- currency: the currency code (e.g. "DKK", "SEK", "EUR", "USD")
 - invoiceId: the invoice number or ID
 - accountIBAN: the IBAN (International Bank Account Number) if available
 - accountBIC: the BIC/SWIFT code for international accounts if available
@@ -158,6 +160,7 @@ Return ONLY valid JSON in this exact format:
   "items": ["item1", "item2"],
   "supplier": "Supplier Name" or null,
   "amount": 1234.56 or null,
+  "currency": "DKK" or null,
   "invoiceId": "INV-123" or null,
   "accountIBAN": "DK1234567890123456" or null,
   "accountBIC": "DABADKKK" or null,
@@ -191,6 +194,7 @@ Return ONLY valid JSON in this exact format:
         items: extracted.items || [],
         supplier: extracted.supplier || null,
         amount: extracted.amount || null,
+        currency: extracted.currency || null,
         invoiceId: extracted.invoiceId || null,
         accountIBAN: extracted.accountIBAN || null,
         accountBIC: extracted.accountBIC || null,
@@ -209,6 +213,7 @@ Return ONLY valid JSON in this exact format:
       items: [],
       supplier: null,
       amount: null,
+      currency: null,
       invoiceId: null,
       accountIBAN: null,
       accountBIC: null,
