@@ -96,6 +96,8 @@ export async function initializeDatabase(db: D1Database): Promise<void> {
     `CREATE INDEX IF NOT EXISTS idx_invoice_id ON invoices(invoice_id)`,
     `CREATE INDEX IF NOT EXISTS idx_created_at ON invoices(created_at)`,
     `CREATE INDEX IF NOT EXISTS idx_source_files_message_id ON source_files(message_id)`,
+    // Migration: add currency column to existing tables (will fail silently if already exists)
+    `ALTER TABLE invoices ADD COLUMN currency TEXT`,
   ];
 
   // Execute each statement separately
