@@ -12,9 +12,10 @@ interface Props {
   onDelete: (id: number) => void;
 }
 
-function formatCurrency(amount: number | null): string {
+function formatCurrency(amount: number | null, currency: string | null): string {
   if (amount === null) return '-';
-  return amount.toLocaleString('da-DK', { style: 'currency', currency: 'DKK' });
+  const currencyCode = currency || 'DKK';
+  return amount.toLocaleString('da-DK', { style: 'currency', currency: currencyCode });
 }
 
 function formatDate(dateString: string | null): string {
@@ -90,7 +91,7 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid, onDelete }: Props
             <CopyableField
               label="Amount"
               value={invoice.amount?.toString() ?? null}
-              formatValue={(v) => formatCurrency(parseFloat(v))}
+              formatValue={(v) => formatCurrency(parseFloat(v), invoice.currency)}
             />
             <CopyableField
               label="Due Date"

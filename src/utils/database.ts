@@ -38,6 +38,7 @@ export interface InvoiceRecord {
   message_id: string;
   supplier: string | null;
   amount: number | null;
+  currency: string | null;
   invoice_id: string | null;
   account_to_pay_IBAN: string | null;
   account_to_pay_BIC: string | null;
@@ -70,6 +71,7 @@ export async function initializeDatabase(db: D1Database): Promise<void> {
       message_id TEXT NOT NULL UNIQUE,
       supplier TEXT,
       amount REAL,
+      currency TEXT,
       invoice_id TEXT,
       account_to_pay_IBAN TEXT,
       account_to_pay_BIC TEXT,
@@ -126,16 +128,17 @@ export async function insertInvoice(
   const result = await db
     .prepare(
       `INSERT INTO invoices (
-        message_id, supplier, amount, invoice_id,
+        message_id, supplier, amount, currency, invoice_id,
         account_to_pay_IBAN, account_to_pay_BIC, account_to_pay_REG, account_to_pay_ACCOUNT_NUMBER,
         last_payment_date, items_json
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       RETURNING *`
     )
     .bind(
       messageId,
       extraction.supplier || null,
       extraction.amount || null,
+      extraction.currency || null,
       extraction.invoiceId || null,
       extraction.accountIBAN || null,
       extraction.accountBIC || null,

@@ -13,9 +13,10 @@ type SortColumn = 'supplier' | 'amount' | 'invoice_id' | 'last_payment_date' | '
 type SortDirection = 'asc' | 'desc';
 type PaidFilter = 'all' | 'paid' | 'unpaid';
 
-function formatCurrency(amount: number | null): string {
+function formatCurrency(amount: number | null, currency: string | null): string {
   if (amount === null) return '-';
-  return amount.toLocaleString('da-DK', { style: 'currency', currency: 'DKK' });
+  const currencyCode = currency || 'DKK';
+  return amount.toLocaleString('da-DK', { style: 'currency', currency: currencyCode });
 }
 
 function formatDate(dateString: string | null): string {
@@ -191,7 +192,7 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
             filteredAndSortedInvoices.map((invoice) => (
               <tr key={invoice.id} onClick={() => onSelect(invoice.id)}>
                 <td>{invoice.supplier || '-'}</td>
-                <td>{formatCurrency(invoice.amount)}</td>
+                <td>{formatCurrency(invoice.amount, invoice.currency)}</td>
                 <td>{invoice.invoice_id || '-'}</td>
                 <td>{formatDate(invoice.last_payment_date)}</td>
                 <td>
