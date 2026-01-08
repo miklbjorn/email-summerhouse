@@ -1,10 +1,12 @@
 import { useState, useMemo } from 'react';
+import { ConfirmModal } from './ConfirmModal';
 import type { InvoiceListItem } from '../types/invoice';
 
 interface Props {
   invoices: InvoiceListItem[];
   loading: boolean;
   onSelect: (id: number) => void;
+  onDelete: (id: number) => void;
 }
 
 type SortColumn = 'supplier' | 'amount' | 'invoice_id' | 'last_payment_date' | 'paid' | 'created_at';
@@ -28,11 +30,12 @@ function SortIcon({ direction, active }: { direction: SortDirection; active: boo
   return <span className="sort-icon">{direction === 'asc' ? '↑' : '↓'}</span>;
 }
 
-export function InvoiceList({ invoices, loading, onSelect }: Props) {
+export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('created_at');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [paidFilter, setPaidFilter] = useState<PaidFilter>('all');
   const [supplierFilter, setSupplierFilter] = useState<string>('');
+  const [invoiceToDelete, setInvoiceToDelete] = useState<InvoiceListItem | null>(null);
 
   const uniqueSuppliers = useMemo(() => {
     const suppliers = invoices
@@ -176,12 +179,13 @@ export function InvoiceList({ invoices, loading, onSelect }: Props) {
             <th className="sortable" onClick={() => handleSort('created_at')}>
               Created <SortIcon direction={sortDirection} active={sortColumn === 'created_at'} />
             </th>
+            <th className="actions-column">Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredAndSortedInvoices.length === 0 ? (
             <tr>
-              <td colSpan={6} className="no-results">No invoices match the selected filters</td>
+              <td colSpan={7} className="no-results">No invoices match the selected filters</td>
             </tr>
           ) : (
             filteredAndSortedInvoices.map((invoice) => (
@@ -196,11 +200,37 @@ export function InvoiceList({ invoices, loading, onSelect }: Props) {
                   </span>
                 </td>
                 <td>{formatDate(invoice.created_at)}</td>
+                <td className="actions-cell">
+                  <button
+                    className="delete-button-small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setInvoiceToDelete(invoice);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))
           )}
         </tbody>
       </table>
+
+      <ConfirmModal
+        isOpen={invoiceToDelete !== null}
+        title="Delete Invoice"
+        message={`Are you sure you want to delete this invoice from ${invoiceToDelete?.supplier || 'unknown supplier'}? This action cannot be undone.`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={() => {
+          if (invoiceToDelete) {
+            onDelete(invoiceToDelete.id);
+            setInvoiceToDelete(null);
+          }
+        }}
+        onCancel={() => setInvoiceToDelete(null)}
+      />
     </div>
   );
 }

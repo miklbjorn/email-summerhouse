@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { PDFViewer } from './PDFViewer';
 import { ImageViewer } from './ImageViewer';
 import { CopyableField } from './CopyableField';
+import { ConfirmModal } from './ConfirmModal';
 import type { InvoiceDetail as InvoiceDetailType } from '../types/invoice';
 
 interface Props {
   invoiceId: number;
   onBack: () => void;
   onMarkPaid: (id: number) => void;
+  onDelete: (id: number) => void;
 }
 
 function formatCurrency(amount: number | null): string {
@@ -20,11 +22,13 @@ function formatDate(dateString: string | null): string {
   return new Date(dateString).toLocaleDateString('da-DK');
 }
 
-export function InvoiceDetail({ invoiceId, onBack, onMarkPaid }: Props) {
+export function InvoiceDetail({ invoiceId, onBack, onMarkPaid, onDelete }: Props) {
   const [invoice, setInvoice] = useState<InvoiceDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [marking, setMarking] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetch(`/api/invoices/${invoiceId}`)
@@ -57,6 +61,12 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid }: Props) {
     setMarking(true);
     await onMarkPaid(invoice!.id);
     setMarking(false);
+  }
+
+  async function handleDelete() {
+    setDeleting(true);
+    await onDelete(invoice!.id);
+    setDeleting(false);
   }
 
   const fileUrl = selectedFile ? `/api/files/${encodeURIComponent(selectedFile)}` : null;
@@ -123,8 +133,8 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid }: Props) {
           </div>
         )}
 
-        {!invoice.paid && (
-          <div className="detail-section">
+        <div className="detail-section action-buttons">
+          {!invoice.paid && (
             <button
               className="mark-paid-button"
               onClick={handleMarkPaid}
@@ -132,9 +142,26 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid }: Props) {
             >
               {marking ? 'Marking as paid...' : 'Mark as Paid'}
             </button>
-          </div>
-        )}
+          )}
+          <button
+            className="delete-button"
+            onClick={() => setShowDeleteConfirm(true)}
+            disabled={deleting}
+          >
+            {deleting ? 'Deleting...' : 'Delete Invoice'}
+          </button>
+        </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showDeleteConfirm}
+        title="Delete Invoice"
+        message={`Are you sure you want to delete this invoice from ${invoice.supplier || 'unknown supplier'}? This action cannot be undone.`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={handleDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
 
       {/* Right Panel - Source File Viewer */}
       <div className="source-file-panel">

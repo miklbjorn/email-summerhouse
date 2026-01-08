@@ -50,10 +50,7 @@
 			"database_id": "34941884-5c1f-433b-ade1-983583df495f"
 		}
 	],
-	"routes": [
-    {
-      "pattern": "regninger.mikkelbjoern.com",
-      "custom_domain": true
-    }
-  ]
+	"vars": {
+		"ENVIRONMENT": "production"
+	}
 }

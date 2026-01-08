@@ -39,6 +39,18 @@ export function App() {
     }
   }
 
+  async function handleDelete(id: number) {
+    try {
+      await fetch(`/api/invoices/${id}`, {
+        method: 'DELETE',
+      });
+      await fetchInvoices();
+      setSelectedInvoiceId(null);
+    } catch (error) {
+      console.error('Failed to delete invoice:', error);
+    }
+  }
+
   return (
     <Layout>
       {selectedInvoiceId ? (
@@ -46,12 +58,14 @@ export function App() {
           invoiceId={selectedInvoiceId}
           onBack={() => setSelectedInvoiceId(null)}
           onMarkPaid={handleMarkPaid}
+          onDelete={handleDelete}
         />
       ) : (
         <InvoiceList
           invoices={invoices}
           loading={loading}
           onSelect={setSelectedInvoiceId}
+          onDelete={handleDelete}
         />
       )}
     </Layout>
