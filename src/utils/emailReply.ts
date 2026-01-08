@@ -40,6 +40,12 @@ export function generateReplyEmail(
     msg.asRaw()
   );
 
+  console.log('Generated reply email:', {
+    to: originalFrom,
+    originalMessageId,
+    message: msg.asRaw(),
+  });
+
   return replyMessage;
 }
 

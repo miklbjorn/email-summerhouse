@@ -44,17 +44,23 @@ export default {
     env: any,
     ctx: ExecutionContext
   ) {
+    
+    // Parse email once, outside the try-catch so we can use fromAddress in error handler
+    const parser = new PostalMime.default();
+    const rawEmail = new Response(message.raw);
+    const rawEmailBuffer = await rawEmail.arrayBuffer();
+    const email = await parser.parse(rawEmailBuffer);
+    const parser2 = new PostalMime.default();
+
+    const email2 = await parser2.parse(rawEmailBuffer);
+    const messageId = extractMessageId(email, message.headers);
+    const fromAddress = email.from?.address ?? "<from-address-missing>";
+    
+    let replyMessage: EmailMessage | null = null; 
+
     try {
-
-      const parser = new PostalMime.default();
-      const rawEmail = new Response(message.raw);
-      const rawEmailBuffer = await rawEmail.arrayBuffer();
-      const email = await parser.parse(rawEmailBuffer);
-      const messageId = extractMessageId(email, message.headers);
-
       // Step 1: Check that the email is sent from an allowed email address
       const allowedSenders = getAllowedSenders(env);
-      const fromAddress = email.from?.address ?? "<from-address-missing>";
 
       if (!allowedSenders.includes(fromAddress)) {
         console.log({
@@ -127,40 +133,32 @@ export default {
       console.log('Persisted to gold layer:', goldPath);
 
       // Initialize database if needed and insert invoice
-      try {
-        await initializeDatabase(env.DB);
-        
-        // Map markdown files to their bronze layer blob URIs
-        // Filter out email-body as it's not a source file attachment
-        // Match attachment filenames to their bronze paths
-        const sourceFiles = markdownFiles
-          .filter((file) => file.filename !== 'email-body')
-          .map((file) => {
-            // Find the bronze path that matches this filename
-            const blobUri = bronzePaths.find((path) => path.endsWith(`/${file.filename}`));
-            return {
-              filename: file.filename,
-              blob_uri: blobUri || '', // Use empty string if not found (shouldn't happen)
-            };
-          });
-        
-        await insertInvoice(env.DB, messageId, extraction, sourceFiles);
-        console.log('Inserted invoice into D1 database');
-      } catch (dbError) {
-        console.error('Database error:', dbError);
-        // Continue even if database insert fails
-      }
+      await initializeDatabase(env.DB);
+      
+      // Map markdown files to their bronze layer blob URIs
+      // Filter out email-body as it's not a source file attachment
+      // Match attachment filenames to their bronze paths
+      const sourceFiles = markdownFiles
+        .filter((file) => file.filename !== 'email-body')
+        .map((file) => {
+          // Find the bronze path that matches this filename
+          const blobUri = bronzePaths.find((path) => path.endsWith(`/${file.filename}`));
+          return {
+            filename: file.filename,
+            blob_uri: blobUri || '', // Use empty string if not found (shouldn't happen)
+          };
+        });
+      
+      await insertInvoice(env.DB, messageId, extraction, sourceFiles);
+      console.log('Inserted invoice into D1 database');
 
       // Step 5: Send reply email with key info summarized
       const originalMessageId = message.headers.get('Message-ID');
-      const replyMessage = generateReplyEmail(
+      replyMessage = generateReplyEmail(
         originalMessageId,
         fromAddress || 'unknown',
         extraction
       );
-
-      await message.reply(replyMessage);
-      console.log('Sent reply email');
 
       console.log({
         message: 'Invoice processing completed successfully',
@@ -170,39 +168,43 @@ export default {
     } catch (error) {
       console.error('Error processing invoice email:', error);
       
-      // Try to send an error reply
+      // Try to send an error reply using already-parsed email data
       try {
-        const parser = new PostalMime.default();
-        const rawEmail = new Response(message.raw);
-        const email = await parser.parse(await rawEmail.arrayBuffer());
-        const fromAddress = email.from?.address;
-
-        if (fromAddress) {
-          const originalMessageId = message.headers.get('Message-ID');
-          const errorReply = generateReplyEmail(
-            originalMessageId,
-            fromAddress,
-            {
-              items: [],
-              supplier: 'Error',
-              amount: null,
-              invoiceId: 'Error',
-              accountIBAN: null,
-              accountBIC: null,
-              accountREG: null,
-              accountNumber: null,
-              lastPaymentDate: null,
-              sourceFileReference: 'N/A',
-            }
-          );
-          await message.reply(errorReply);
-        }
+        const originalMessageId = message.headers.get('Message-ID');
+        replyMessage = generateReplyEmail(
+          originalMessageId,
+          fromAddress,
+          {
+            items: [],
+            supplier: 'Error',
+            amount: null,
+            invoiceId: 'Error',
+            accountIBAN: null,
+            accountBIC: null,
+            accountREG: null,
+            accountNumber: null,
+            lastPaymentDate: null,
+            sourceFileReference: 'N/A',
+          }
+        );
       } catch (replyError) {
-        console.error('Failed to send error reply:', replyError);
+        console.error('Failed to construct a reply message:', replyError);
       }
 
       // Re-throw to mark email as failed
       throw error;
+    } finally {
+      // Send reply if we have a replyMessage constructed
+      if (replyMessage) {
+        try {
+          await message.reply(replyMessage);
+          console.log('Sent reply email to:', fromAddress);
+        } catch (sendError) {
+          console.error('Failed to send reply email:', sendError);
+        }
+      } else {
+        console.warn('No reply message constructed; skipping reply email.');
+      }
     }
   },
 
