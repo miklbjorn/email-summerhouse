@@ -12,6 +12,7 @@ export interface InvoiceListItem {
   status: InvoiceStatus;
   paid_at: string | null;
   created_at: string;
+  manually_edited_fields: string[] | null;
 }
 
 export interface SourceFile {

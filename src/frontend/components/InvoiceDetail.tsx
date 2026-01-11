@@ -1,15 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { PDFViewer } from './PDFViewer';
 import { ImageViewer } from './ImageViewer';
 import { CopyableField } from './CopyableField';
+import { EditableField } from './EditableField';
+import { StatusSelect } from './StatusSelect';
 import { ConfirmModal } from './ConfirmModal';
-import type { InvoiceDetail as InvoiceDetailType } from '../types/invoice';
+import type { InvoiceDetail as InvoiceDetailType, InvoiceStatus } from '../types/invoice';
 
 interface Props {
   invoiceId: number;
   onBack: () => void;
   onMarkPaid: (id: number) => void;
   onDelete: (id: number) => void;
+  onUpdate?: (invoice: InvoiceDetailType) => void;
 }
 
 function formatCurrency(amount: number | null, currency: string | null): string {
@@ -23,13 +26,53 @@ function formatDate(dateString: string | null): string {
   return new Date(dateString).toLocaleDateString('da-DK');
 }
 
-export function InvoiceDetail({ invoiceId, onBack, onMarkPaid, onDelete }: Props) {
+export function InvoiceDetail({ invoiceId, onBack, onMarkPaid, onDelete, onUpdate }: Props) {
   const [invoice, setInvoice] = useState<InvoiceDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [marking, setMarking] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  const isFieldEdited = useCallback((fieldName: string) => {
+    return invoice?.manually_edited_fields?.includes(fieldName) ?? false;
+  }, [invoice?.manually_edited_fields]);
+
+  const handleFieldSave = useCallback(async (fieldName: string, value: string | null) => {
+    if (!invoice) return;
+
+    const response = await fetch(`/api/invoices/${invoice.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ [fieldName]: value }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update field');
+    }
+
+    const updatedInvoice = await response.json() as InvoiceDetailType;
+    setInvoice(updatedInvoice);
+    onUpdate?.(updatedInvoice);
+  }, [invoice, onUpdate]);
+
+  const handleStatusSave = useCallback(async (status: InvoiceStatus) => {
+    if (!invoice) return;
+
+    const response = await fetch(`/api/invoices/${invoice.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update status');
+    }
+
+    const updatedInvoice = await response.json() as InvoiceDetailType;
+    setInvoice(updatedInvoice);
+    onUpdate?.(updatedInvoice);
+  }, [invoice, onUpdate]);
 
   useEffect(() => {
     fetch(`/api/invoices/${invoiceId}`)
@@ -86,36 +129,63 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid, onDelete }: Props
         <div className="detail-section">
           <h2>Invoice Details</h2>
           <dl className="detail-grid">
-            <CopyableField label="Supplier" value={invoice.supplier} />
-            <CopyableField label="Invoice ID" value={invoice.invoice_id} />
-            <CopyableField
+            <EditableField
+              label="Supplier"
+              fieldName="supplier"
+              value={invoice.supplier}
+              isEdited={isFieldEdited('supplier')}
+              onSave={handleFieldSave}
+            />
+            <EditableField
+              label="Invoice ID"
+              fieldName="invoice_id"
+              value={invoice.invoice_id}
+              isEdited={isFieldEdited('invoice_id')}
+              onSave={handleFieldSave}
+            />
+            <EditableField
               label="Amount"
+              fieldName="amount"
               value={invoice.amount?.toString() ?? null}
               formatValue={(v) => formatCurrency(parseFloat(v), invoice.currency)}
+              parseValue={(v) => v ? v.replace(/[^0-9.,]/g, '').replace(',', '.') : null}
+              isEdited={isFieldEdited('amount')}
+              onSave={handleFieldSave}
+              inputType="text"
             />
-            {invoice.account_balance && (
-              <div className="detail-item">
-                <dt>Credit Balance</dt>
-                <dd>
-                  <span className="status-badge balance">
-                    {formatCurrency(invoice.account_balance, invoice.currency)}
-                  </span>
-                </dd>
-              </div>
-            )}
-            <CopyableField
+            <EditableField
+              label="Currency"
+              fieldName="currency"
+              value={invoice.currency}
+              isEdited={isFieldEdited('currency')}
+              onSave={handleFieldSave}
+            />
+            <EditableField
+              label="Credit Balance"
+              fieldName="account_balance"
+              value={invoice.account_balance?.toString() ?? null}
+              formatValue={(v) => formatCurrency(parseFloat(v), invoice.currency)}
+              parseValue={(v) => v ? v.replace(/[^0-9.,]/g, '').replace(',', '.') : null}
+              isEdited={isFieldEdited('account_balance')}
+              onSave={handleFieldSave}
+              inputType="text"
+            />
+            <EditableField
               label="Due Date"
+              fieldName="last_payment_date"
               value={invoice.last_payment_date}
               formatValue={formatDate}
+              isEdited={isFieldEdited('last_payment_date')}
+              onSave={handleFieldSave}
+              inputType="date"
             />
-            <div className="detail-item">
-              <dt>Status</dt>
-              <dd>
-                <span className={`status-badge ${invoice.status === 'paid' ? 'paid' : (invoice.status === 'no_payment_due' ? 'balance' : 'unpaid')}`}>
-                  {invoice.status === 'paid' ? `Paid on ${formatDate(invoice.paid_at)}` : (invoice.status === 'no_payment_due' ? 'All good' : 'Unpaid')}
-                </span>
-              </dd>
-            </div>
+            <StatusSelect
+              status={invoice.status}
+              paidAt={invoice.paid_at}
+              isEdited={isFieldEdited('status')}
+              onSave={handleStatusSave}
+              formatDate={formatDate}
+            />
             <div className="detail-item">
               <dt>Received</dt>
               <dd>{formatDate(invoice.created_at)}</dd>
@@ -126,10 +196,34 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid, onDelete }: Props
         <div className="detail-section">
           <h2>Payment Information</h2>
           <dl className="detail-grid">
-            <CopyableField label="IBAN" value={invoice.account_to_pay_IBAN} />
-            <CopyableField label="BIC" value={invoice.account_to_pay_BIC} />
-            <CopyableField label="REG" value={invoice.account_to_pay_REG} />
-            <CopyableField label="Account Number" value={invoice.account_to_pay_ACCOUNT_NUMBER} />
+            <EditableField
+              label="IBAN"
+              fieldName="account_to_pay_IBAN"
+              value={invoice.account_to_pay_IBAN}
+              isEdited={isFieldEdited('account_to_pay_IBAN')}
+              onSave={handleFieldSave}
+            />
+            <EditableField
+              label="BIC"
+              fieldName="account_to_pay_BIC"
+              value={invoice.account_to_pay_BIC}
+              isEdited={isFieldEdited('account_to_pay_BIC')}
+              onSave={handleFieldSave}
+            />
+            <EditableField
+              label="REG"
+              fieldName="account_to_pay_REG"
+              value={invoice.account_to_pay_REG}
+              isEdited={isFieldEdited('account_to_pay_REG')}
+              onSave={handleFieldSave}
+            />
+            <EditableField
+              label="Account Number"
+              fieldName="account_to_pay_ACCOUNT_NUMBER"
+              value={invoice.account_to_pay_ACCOUNT_NUMBER}
+              isEdited={isFieldEdited('account_to_pay_ACCOUNT_NUMBER')}
+              onSave={handleFieldSave}
+            />
           </dl>
         </div>
 

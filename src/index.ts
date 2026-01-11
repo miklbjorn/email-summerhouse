@@ -34,7 +34,7 @@ import {
   insertInvoice,
 } from './utils/database';
 import { generateReplyEmail, generateErrorReplyEmail } from './utils/email-replies';
-import { getAllInvoices, getInvoiceById, markInvoiceAsPaid, deleteInvoice } from './api/invoices';
+import { getAllInvoices, getInvoiceById, updateInvoice, deleteInvoice, type InvoiceUpdateRequest } from './api/invoices';
 import { serveFileFromR2 } from './api/files';
 import { verifyAccessJWT } from './utils/auth';
 
@@ -277,17 +277,26 @@ async function handleApiRequest(
       return new Response(JSON.stringify(invoice), { headers: corsHeaders });
     }
 
-    // PATCH /api/invoices/:id - Update invoice (mark paid)
+    // PATCH /api/invoices/:id - Update invoice fields
     if (invoiceMatch && request.method === 'PATCH') {
-      const body = await request.json() as { paid?: boolean };
-      if (body.paid === true) {
-        await markInvoiceAsPaid(env.DB, parseInt(invoiceMatch[1]));
-        return new Response(JSON.stringify({ success: true }), { headers: corsHeaders });
+      const body = await request.json() as InvoiceUpdateRequest & { paid?: boolean };
+
+      // Handle legacy { paid: true } format for backwards compatibility
+      if (body.paid === true && !body.status) {
+        body.status = 'paid';
       }
-      return new Response(JSON.stringify({ error: 'Invalid request' }), {
-        status: 400,
-        headers: corsHeaders,
-      });
+
+      // Remove the legacy paid field before passing to updateInvoice
+      const { paid, ...updates } = body as InvoiceUpdateRequest & { paid?: boolean };
+
+      const updatedInvoice = await updateInvoice(env.DB, parseInt(invoiceMatch[1]), updates);
+      if (!updatedInvoice) {
+        return new Response(JSON.stringify({ error: 'Not found' }), {
+          status: 404,
+          headers: corsHeaders,
+        });
+      }
+      return new Response(JSON.stringify(updatedInvoice), { headers: corsHeaders });
     }
 
     // DELETE /api/invoices/:id - Delete invoice

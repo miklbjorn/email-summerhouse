@@ -877,3 +877,126 @@ body {
   gap: 0.75rem;
   flex-wrap: wrap;
 }
+
+/* Editable Field */
+.editable-field {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.editable-field.editing {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #2563eb;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.edit-input:focus {
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: flex-end;
+}
+
+.edit-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.15s;
+}
+
+.edit-action-button.save {
+  color: #059669;
+  border-color: #059669;
+}
+
+.edit-action-button.save:hover {
+  background: #059669;
+  color: white;
+}
+
+.edit-action-button.cancel {
+  color: #666;
+}
+
+.edit-action-button.cancel:hover {
+  background: #e5e5e5;
+}
+
+.edit-action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.edit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #888;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+}
+
+.editable-field:hover .edit-button {
+  opacity: 1;
+}
+
+.edit-button:hover {
+  background: #e5e5e5;
+  color: #2563eb;
+}
+
+/* Manually edited indicator */
+.manually-edited dt {
+  color: #2563eb;
+}
+
+.edited-indicator {
+  color: #2563eb;
+  font-weight: bold;
+  margin-left: 0.25rem;
+}
+
+/* Status editing */
+.status-editing {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.status-select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #2563eb;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  background: white;
+  cursor: pointer;
+  outline: none;
+}
+
+.status-select:focus {
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
