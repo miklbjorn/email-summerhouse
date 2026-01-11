@@ -50,6 +50,7 @@ export interface InvoiceRecord {
   status: 'unpaid' | 'paid' | 'no_payment_due';
   paid_at: string | null;
   created_at: string;
+  manually_edited_fields: string | null; // JSON array of field names that were manually edited
 }
 
 export interface SourceFileRecord {
