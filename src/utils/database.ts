@@ -39,6 +39,7 @@ export interface InvoiceRecord {
   supplier: string | null;
   amount: number | null;
   currency: string | null;
+  account_balance: number | null;
   invoice_id: string | null;
   account_to_pay_IBAN: string | null;
   account_to_pay_BIC: string | null;
@@ -46,7 +47,7 @@ export interface InvoiceRecord {
   account_to_pay_ACCOUNT_NUMBER: string | null;
   last_payment_date: string | null;
   items_json: string | null; // JSON array of items
-  paid: boolean;
+  status: 'unpaid' | 'paid' | 'no_payment_due';
   paid_at: string | null;
   created_at: string;
 }
@@ -72,6 +73,7 @@ export async function initializeDatabase(db: D1Database): Promise<void> {
       supplier TEXT,
       amount REAL,
       currency TEXT,
+      account_balance REAL,
       invoice_id TEXT,
       account_to_pay_IBAN TEXT,
       account_to_pay_BIC TEXT,
@@ -79,7 +81,7 @@ export async function initializeDatabase(db: D1Database): Promise<void> {
       account_to_pay_ACCOUNT_NUMBER TEXT,
       last_payment_date TEXT,
       items_json TEXT,
-      paid INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'unpaid',
       paid_at TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )`,
@@ -124,14 +126,19 @@ export async function insertInvoice(
     ? JSON.stringify(extraction.items)
     : null;
 
+  // Determine status based on amount and account balance
+  const hasBalance = extraction.accountBalance && extraction.accountBalance > 0;
+  const hasAmountDue = extraction.amount && extraction.amount > 0;
+  const status = hasBalance && !hasAmountDue ? 'no_payment_due' : 'unpaid';
+
   // Insert invoice record
   const result = await db
     .prepare(
       `INSERT INTO invoices (
-        message_id, supplier, amount, currency, invoice_id,
+        message_id, supplier, amount, currency, account_balance, invoice_id,
         account_to_pay_IBAN, account_to_pay_BIC, account_to_pay_REG, account_to_pay_ACCOUNT_NUMBER,
-        last_payment_date, items_json
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        last_payment_date, items_json, status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       RETURNING *`
     )
     .bind(
@@ -139,13 +146,15 @@ export async function insertInvoice(
       extraction.supplier || null,
       extraction.amount || null,
       extraction.currency || null,
+      extraction.accountBalance || null,
       extraction.invoiceId || null,
       extraction.accountIBAN || null,
       extraction.accountBIC || null,
       extraction.accountREG || null,
       extraction.accountNumber || null,
       extraction.lastPaymentDate || null,
-      itemsJson
+      itemsJson,
+      status
     )
     .first<InvoiceRecord>();
 

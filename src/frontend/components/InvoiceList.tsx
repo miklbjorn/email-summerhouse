@@ -9,9 +9,9 @@ interface Props {
   onDelete: (id: number) => void;
 }
 
-type SortColumn = 'supplier' | 'amount' | 'invoice_id' | 'last_payment_date' | 'paid' | 'created_at';
+type SortColumn = 'supplier' | 'amount' | 'account_balance' | 'invoice_id' | 'last_payment_date' | 'status' | 'created_at';
 type SortDirection = 'asc' | 'desc';
-type PaidFilter = 'all' | 'paid' | 'unpaid';
+type StatusFilter = 'all' | 'unpaid' | 'paid' | 'no_payment_due';
 
 function formatCurrency(amount: number | null, currency: string | null): string {
   if (amount === null) return '-';
@@ -34,7 +34,7 @@ function SortIcon({ direction, active }: { direction: SortDirection; active: boo
 export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('created_at');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [paidFilter, setPaidFilter] = useState<PaidFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [supplierFilter, setSupplierFilter] = useState<string>('');
   const [invoiceToDelete, setInvoiceToDelete] = useState<InvoiceListItem | null>(null);
 
@@ -48,11 +48,9 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
   const filteredAndSortedInvoices = useMemo(() => {
     let result = [...invoices];
 
-    // Apply paid filter
-    if (paidFilter === 'paid') {
-      result = result.filter(inv => inv.paid === 1);
-    } else if (paidFilter === 'unpaid') {
-      result = result.filter(inv => inv.paid === 0);
+    // Apply status filter
+    if (statusFilter !== 'all') {
+      result = result.filter(inv => inv.status === statusFilter);
     }
 
     // Apply supplier filter
@@ -74,6 +72,10 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
           aVal = a.amount ?? 0;
           bVal = b.amount ?? 0;
           break;
+        case 'account_balance':
+          aVal = a.account_balance ?? 0;
+          bVal = b.account_balance ?? 0;
+          break;
         case 'invoice_id':
           aVal = a.invoice_id?.toLowerCase() ?? '';
           bVal = b.invoice_id?.toLowerCase() ?? '';
@@ -82,9 +84,9 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
           aVal = a.last_payment_date ?? '';
           bVal = b.last_payment_date ?? '';
           break;
-        case 'paid':
-          aVal = a.paid;
-          bVal = b.paid;
+        case 'status':
+          aVal = a.status;
+          bVal = b.status;
           break;
         case 'created_at':
           aVal = a.created_at;
@@ -100,7 +102,7 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
     });
 
     return result;
-  }, [invoices, sortColumn, sortDirection, paidFilter, supplierFilter]);
+  }, [invoices, sortColumn, sortDirection, statusFilter, supplierFilter]);
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
@@ -123,15 +125,16 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
     <div className="invoice-list">
       <div className="invoice-filters">
         <div className="filter-group">
-          <label htmlFor="paid-filter">Status:</label>
+          <label htmlFor="status-filter">Status:</label>
           <select
-            id="paid-filter"
-            value={paidFilter}
-            onChange={(e) => setPaidFilter(e.target.value as PaidFilter)}
+            id="status-filter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
           >
             <option value="all">All</option>
-            <option value="paid">Paid</option>
             <option value="unpaid">Unpaid</option>
+            <option value="paid">Paid</option>
+            <option value="no_payment_due">All good</option>
           </select>
         </div>
         <div className="filter-group">
@@ -147,11 +150,11 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
             ))}
           </select>
         </div>
-        {(paidFilter !== 'all' || supplierFilter) && (
+        {(statusFilter !== 'all' || supplierFilter) && (
           <button
             className="clear-filters-button"
             onClick={() => {
-              setPaidFilter('all');
+              setStatusFilter('all');
               setSupplierFilter('');
             }}
           >
@@ -168,14 +171,17 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
             <th className="sortable" onClick={() => handleSort('amount')}>
               Amount <SortIcon direction={sortDirection} active={sortColumn === 'amount'} />
             </th>
+            <th className="sortable" onClick={() => handleSort('account_balance')}>
+              Credit Balance <SortIcon direction={sortDirection} active={sortColumn === 'account_balance'} />
+            </th>
             <th className="sortable" onClick={() => handleSort('invoice_id')}>
               Invoice ID <SortIcon direction={sortDirection} active={sortColumn === 'invoice_id'} />
             </th>
             <th className="sortable" onClick={() => handleSort('last_payment_date')}>
               Due Date <SortIcon direction={sortDirection} active={sortColumn === 'last_payment_date'} />
             </th>
-            <th className="sortable" onClick={() => handleSort('paid')}>
-              Status <SortIcon direction={sortDirection} active={sortColumn === 'paid'} />
+            <th className="sortable" onClick={() => handleSort('status')}>
+              Status <SortIcon direction={sortDirection} active={sortColumn === 'status'} />
             </th>
             <th className="sortable" onClick={() => handleSort('created_at')}>
               Created <SortIcon direction={sortDirection} active={sortColumn === 'created_at'} />
@@ -186,18 +192,25 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
         <tbody>
           {filteredAndSortedInvoices.length === 0 ? (
             <tr>
-              <td colSpan={7} className="no-results">No invoices match the selected filters</td>
+              <td colSpan={8} className="no-results">No invoices match the selected filters</td>
             </tr>
           ) : (
             filteredAndSortedInvoices.map((invoice) => (
               <tr key={invoice.id} onClick={() => onSelect(invoice.id)}>
                 <td>{invoice.supplier || '-'}</td>
                 <td>{formatCurrency(invoice.amount, invoice.currency)}</td>
+                <td>
+                  {invoice.account_balance ? (
+                    <span className="status-badge balance">
+                      {formatCurrency(invoice.account_balance, invoice.currency)}
+                    </span>
+                  ) : '-'}
+                </td>
                 <td>{invoice.invoice_id || '-'}</td>
                 <td>{formatDate(invoice.last_payment_date)}</td>
                 <td>
-                  <span className={`status-badge ${invoice.paid ? 'paid' : 'unpaid'}`}>
-                    {invoice.paid ? 'Paid' : 'Unpaid'}
+                  <span className={`status-badge ${invoice.status === 'paid' ? 'paid' : (invoice.status === 'no_payment_due' ? 'balance' : 'unpaid')}`}>
+                    {invoice.status === 'paid' ? 'Paid' : (invoice.status === 'no_payment_due' ? 'All good' : 'Unpaid')}
                   </span>
                 </td>
                 <td>{formatDate(invoice.created_at)}</td>

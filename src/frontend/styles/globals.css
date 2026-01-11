@@ -161,6 +161,11 @@ body {
   color: #92400e;
 }
 
+.status-badge.balance {
+  background: #dcfce7;
+  color: #166534;
+}
+
 /* Invoice Detail - Side by Side Layout */
 .invoice-detail-layout {
   display: grid;

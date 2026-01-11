@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS invoices (
       message_id TEXT NOT NULL UNIQUE,
       supplier TEXT,
       amount REAL,
+      currency TEXT,
+      account_balance REAL,
       invoice_id TEXT,
       account_to_pay_IBAN TEXT,
       account_to_pay_BIC TEXT,
@@ -10,7 +12,7 @@ CREATE TABLE IF NOT EXISTS invoices (
       account_to_pay_ACCOUNT_NUMBER TEXT,
       last_payment_date TEXT,
       items_json TEXT,
-      paid INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'unpaid',
       paid_at TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
