@@ -15,7 +15,7 @@ interface Props {
 function formatCurrency(amount: number | null, currency: string | null): string {
   if (amount === null) return '-';
   const currencyCode = currency || 'DKK';
-  return amount.toLocaleString('da-DK', { style: 'currency', currency: currencyCode });
+  return amount.toLocaleString('da-DK', { style: 'currency', currency: currencyCode, currencyDisplay: 'code' });
 }
 
 function formatDate(dateString: string | null): string {

@@ -61,7 +61,8 @@ function generateSummaryText(extraction: InvoiceExtraction): string {
   const amountFormatted = extraction.amount
     ? new Intl.NumberFormat('da-DK', {
         style: 'currency',
-        currency: 'DKK',
+        currency: extraction.currency || 'DKK',
+        currencyDisplay: 'code',
       }).format(extraction.amount)
     : 'Ikke angivet';
 
