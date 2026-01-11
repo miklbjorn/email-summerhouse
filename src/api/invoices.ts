@@ -4,14 +4,18 @@
 
 import type { D1Database, InvoiceRecord, SourceFileRecord } from '../utils/database';
 
+export type InvoiceStatus = 'unpaid' | 'paid' | 'no_payment_due';
+
 export interface InvoiceListItem {
   id: number;
   message_id: string;
   supplier: string | null;
   amount: number | null;
+  currency: string | null;
+  account_balance: number | null;
   invoice_id: string | null;
   last_payment_date: string | null;
-  paid: number;
+  status: InvoiceStatus;
   paid_at: string | null;
   created_at: string;
 }
@@ -29,12 +33,12 @@ export async function getAllInvoices(
   db: D1Database,
   options?: { limit?: number; offset?: number; unpaidOnly?: boolean }
 ): Promise<InvoiceListItem[]> {
-  let query = `SELECT id, message_id, supplier, amount, invoice_id,
-               last_payment_date, paid, paid_at, created_at
+  let query = `SELECT id, message_id, supplier, amount, currency, account_balance, invoice_id,
+               last_payment_date, status, paid_at, created_at
                FROM invoices`;
 
   if (options?.unpaidOnly) {
-    query += ` WHERE paid = 0`;
+    query += ` WHERE status = 'unpaid'`;
   }
 
   query += ` ORDER BY created_at DESC`;
@@ -71,7 +75,6 @@ export async function getInvoiceById(
   return {
     ...invoice,
     id: invoice.id!,
-    paid: invoice.paid ? 1 : 0,
     source_files: sourceFilesResult.results,
   };
 }
@@ -81,7 +84,7 @@ export async function markInvoiceAsPaid(
   id: number
 ): Promise<boolean> {
   const result = await db
-    .prepare(`UPDATE invoices SET paid = 1, paid_at = datetime('now') WHERE id = ?`)
+    .prepare(`UPDATE invoices SET status = 'paid', paid_at = datetime('now') WHERE id = ?`)
     .bind(id)
     .run();
 

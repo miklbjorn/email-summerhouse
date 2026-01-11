@@ -15,7 +15,7 @@ interface Props {
 function formatCurrency(amount: number | null, currency: string | null): string {
   if (amount === null) return '-';
   const currencyCode = currency || 'DKK';
-  return amount.toLocaleString('da-DK', { style: 'currency', currency: currencyCode });
+  return amount.toLocaleString('da-DK', { style: 'currency', currency: currencyCode, currencyDisplay: 'code' });
 }
 
 function formatDate(dateString: string | null): string {
@@ -93,6 +93,16 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid, onDelete }: Props
               value={invoice.amount?.toString() ?? null}
               formatValue={(v) => formatCurrency(parseFloat(v), invoice.currency)}
             />
+            {invoice.account_balance && (
+              <div className="detail-item">
+                <dt>Credit Balance</dt>
+                <dd>
+                  <span className="status-badge balance">
+                    {formatCurrency(invoice.account_balance, invoice.currency)}
+                  </span>
+                </dd>
+              </div>
+            )}
             <CopyableField
               label="Due Date"
               value={invoice.last_payment_date}
@@ -101,8 +111,8 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid, onDelete }: Props
             <div className="detail-item">
               <dt>Status</dt>
               <dd>
-                <span className={`status-badge ${invoice.paid ? 'paid' : 'unpaid'}`}>
-                  {invoice.paid ? `Paid on ${formatDate(invoice.paid_at)}` : 'Unpaid'}
+                <span className={`status-badge ${invoice.status === 'paid' ? 'paid' : (invoice.status === 'no_payment_due' ? 'balance' : 'unpaid')}`}>
+                  {invoice.status === 'paid' ? `Paid on ${formatDate(invoice.paid_at)}` : (invoice.status === 'no_payment_due' ? 'All good' : 'Unpaid')}
                 </span>
               </dd>
             </div>
@@ -135,7 +145,7 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid, onDelete }: Props
         )}
 
         <div className="detail-section action-buttons">
-          {!invoice.paid && (
+          {invoice.status === 'unpaid' && (
             <button
               className="mark-paid-button"
               onClick={handleMarkPaid}

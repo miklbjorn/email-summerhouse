@@ -1,12 +1,15 @@
+export type InvoiceStatus = 'unpaid' | 'paid' | 'no_payment_due';
+
 export interface InvoiceListItem {
   id: number;
   message_id: string;
   supplier: string | null;
   amount: number | null;
   currency: string | null;
+  account_balance: number | null;
   invoice_id: string | null;
   last_payment_date: string | null;
-  paid: number;
+  status: InvoiceStatus;
   paid_at: string | null;
   created_at: string;
 }

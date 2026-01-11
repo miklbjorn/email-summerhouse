@@ -11,6 +11,7 @@ export interface InvoiceExtraction {
   supplier: string | null;
   amount: number | null;
   currency: string | null;
+  accountBalance: number | null;
   invoiceId: string | null;
   accountIBAN: string | null;
   accountBIC: string | null;
@@ -142,8 +143,9 @@ export async function extractInvoiceInfo(
 Required fields (all can be null if not found):
 - items: array of strings describing what items/services are covered (can be empty array)
 - supplier: the name of the supplier/company that sent the invoice
-- amount: the total amount to pay (as a number)
+- amount: the total amount to pay (as a number, null if nothing to pay or there is a positive balance)
 - currency: the currency code (e.g. "DKK", "SEK", "EUR", "USD")
+- accountBalance: positive remaining credit balance in your favor (as a number, null if no balance - this is for cases where the customer has prepaid or overpaid)
 - invoiceId: the invoice number or ID
 - accountIBAN: the IBAN (International Bank Account Number) if available
 - accountBIC: the BIC/SWIFT code for international accounts if available
@@ -161,6 +163,7 @@ Return ONLY valid JSON in this exact format:
   "supplier": "Supplier Name" or null,
   "amount": 1234.56 or null,
   "currency": "DKK" or null,
+  "accountBalance": 250.00 or null,
   "invoiceId": "INV-123" or null,
   "accountIBAN": "DK1234567890123456" or null,
   "accountBIC": "DABADKKK" or null,
@@ -195,6 +198,7 @@ Return ONLY valid JSON in this exact format:
         supplier: extracted.supplier || null,
         amount: extracted.amount || null,
         currency: extracted.currency || null,
+        accountBalance: extracted.accountBalance || null,
         invoiceId: extracted.invoiceId || null,
         accountIBAN: extracted.accountIBAN || null,
         accountBIC: extracted.accountBIC || null,
@@ -214,6 +218,7 @@ Return ONLY valid JSON in this exact format:
       supplier: null,
       amount: null,
       currency: null,
+      accountBalance: null,
       invoiceId: null,
       accountIBAN: null,
       accountBIC: null,

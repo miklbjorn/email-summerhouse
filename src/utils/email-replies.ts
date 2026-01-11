@@ -61,9 +61,18 @@ function generateSummaryText(extraction: InvoiceExtraction): string {
   const amountFormatted = extraction.amount
     ? new Intl.NumberFormat('da-DK', {
         style: 'currency',
-        currency: 'DKK',
+        currency: extraction.currency || 'DKK',
+        currencyDisplay: 'code',
       }).format(extraction.amount)
     : 'Ikke angivet';
+
+  const accountBalanceFormatted = extraction.accountBalance
+    ? new Intl.NumberFormat('da-DK', {
+        style: 'currency',
+        currency: extraction.currency || 'DKK',
+        currencyDisplay: 'code',
+      }).format(extraction.accountBalance)
+    : null;
 
   const paymentDateText = extraction.lastPaymentDate
     ? `Last Payment Date: ${extraction.lastPaymentDate}`
@@ -86,7 +95,7 @@ Jeg har behandlet din faktura og ekstraheret følgende information:
 📋 Faktura Detaljer:
 - Faktura ID: ${extraction.invoiceId || 'Ikke angivet'}
 - Leverandør: ${extraction.supplier || 'Ikke angivet'}
-- Beløb: ${amountFormatted}
+- Beløb: ${amountFormatted}${accountBalanceFormatted ? `\n- Tilgodehavende: ${accountBalanceFormatted}` : ''}
 - Konto - IBAN: ${extraction.accountIBAN || 'Ikke angivet'}
 - Konto - BIC: ${extraction.accountBIC || 'Ikke angivet'}
 - Konto - Reg. nummer: ${extraction.accountREG || 'Ikke angivet'}
