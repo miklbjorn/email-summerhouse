@@ -17,6 +17,7 @@ const EVAL_DIR = path.dirname(new URL(import.meta.url).pathname);
 const DATA_DIR = path.join(EVAL_DIR, 'data');
 const GROUND_TRUTH_PATH = path.join(EVAL_DIR, 'eval_ground_truth.csv');
 const RESULTS_DIR = path.join(EVAL_DIR, 'results');
+const MARKDOWN_DIR = path.join(EVAL_DIR, 'markdown');
 
 interface GroundTruth {
   filename: string;
@@ -46,6 +47,16 @@ interface ExtractionResult {
   accountBalance: number | null;
 }
 
+interface MarkdownFile {
+  filename: string;
+  content: string;
+}
+
+interface ExtractResponse {
+  extraction: ExtractionResult;
+  markdown: MarkdownFile[];
+}
+
 interface FieldComparison {
   field: string;
   expected: string | number | null;
@@ -57,6 +68,7 @@ interface EvalResult {
   filename: string;
   success: boolean;
   error?: string;
+  extraction?: ExtractionResult;
   comparisons: FieldComparison[];
   matchCount: number;
   totalFields: number;
@@ -105,6 +117,12 @@ function normalizeIBAN(value: string | null | undefined): string | null {
   return value.replace(/\s+/g, '').replace(/^IBAN\s*/i, '').toLowerCase();
 }
 
+function normalizeInvoiceId(value: string | null | undefined): string | null {
+  if (!value) return null;
+  // Remove all whitespace and lowercase for comparison
+  return value.replace(/\s+/g, '').toLowerCase();
+}
+
 function normalizeDate(value: string | null | undefined): string | null {
   if (!value) return null;
   // Try to parse various date formats and normalize to YYYY-MM-DD
@@ -142,6 +160,8 @@ function compareField(
     match = Math.abs(expected - actual) < 0.01;
   } else if (field === 'accountIBAN') {
     match = normalizeIBAN(String(expected)) === normalizeIBAN(String(actual));
+  } else if (field === 'invoiceId') {
+    match = normalizeInvoiceId(String(expected)) === normalizeInvoiceId(String(actual));
   } else if (field === 'lastPaymentDate') {
     match = normalizeDate(String(expected)) === normalizeDate(String(actual));
   } else {
@@ -153,7 +173,7 @@ function compareField(
 
 async function extractFromPDF(
   filePath: string
-): Promise<ExtractionResult> {
+): Promise<ExtractResponse> {
   const fileBuffer = fs.readFileSync(filePath);
   const filename = path.basename(filePath);
 
@@ -170,8 +190,25 @@ async function extractFromPDF(
     throw new Error(`Extraction failed: ${response.status} ${error}`);
   }
 
-  const result = await response.json() as { extraction: ExtractionResult };
-  return result.extraction;
+  return await response.json() as ExtractResponse;
+}
+
+function saveMarkdown(pdfFilename: string, markdownFiles: MarkdownFile[]): void {
+  // Ensure markdown directory exists
+  if (!fs.existsSync(MARKDOWN_DIR)) {
+    fs.mkdirSync(MARKDOWN_DIR, { recursive: true });
+  }
+
+  // Use PDF filename (without extension) as the markdown filename
+  const baseName = pdfFilename.replace(/\.[^.]+$/, '');
+
+  // Combine all markdown files into one (typically there's just one for a PDF)
+  const combinedContent = markdownFiles
+    .map((f) => `# ${f.filename}\n\n${f.content}`)
+    .join('\n\n---\n\n');
+
+  const markdownPath = path.join(MARKDOWN_DIR, `${baseName}.md`);
+  fs.writeFileSync(markdownPath, combinedContent, 'utf-8');
 }
 
 function compareExtraction(
@@ -232,13 +269,18 @@ async function runEval(): Promise<void> {
     }
 
     try {
-      const extraction = await extractFromPDF(pdfPath);
+      const { extraction, markdown } = await extractFromPDF(pdfPath);
+
+      // Save markdown for manual inspection
+      saveMarkdown(groundTruth.filename, markdown);
+
       const comparisons = compareExtraction(groundTruth, extraction);
       const matchCount = comparisons.filter((c) => c.match).length;
 
       results.push({
         filename: groundTruth.filename,
         success: true,
+        extraction,
         comparisons,
         matchCount,
         totalFields: comparisons.length,
@@ -316,7 +358,10 @@ async function runEval(): Promise<void> {
   }
 
   // Write detailed results to CSV
-  writeResultsCSV(results);
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  writeResultsCSV(results, timestamp);
+
+  console.log(`\nMarkdown files saved to: ${MARKDOWN_DIR}`);
 
   // Exit with error code if there were failures
   const failedCount = results.length - successfulResults.length;
@@ -335,13 +380,12 @@ function escapeCSV(value: string | number | null | undefined): string {
   return str;
 }
 
-function writeResultsCSV(results: EvalResult[]): void {
+function writeResultsCSV(results: EvalResult[], timestamp: string): void {
   // Ensure results directory exists
   if (!fs.existsSync(RESULTS_DIR)) {
     fs.mkdirSync(RESULTS_DIR, { recursive: true });
   }
 
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
   const csvPath = path.join(RESULTS_DIR, `eval-results-${timestamp}.csv`);
 
   const rows: string[] = [];

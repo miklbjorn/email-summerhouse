@@ -173,3 +173,4 @@ dist
 eval/data/*.pdf
 eval/eval_ground_truth.csv
 eval/results/*.csv
+eval/markdown/*.md
