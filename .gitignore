@@ -1,3 +1,6 @@
+# MacOS metadata
+.DS_Store
+
 # Logs
 
 logs
@@ -165,3 +168,9 @@ dist
 .env*
 !.env.example
 .wrangler/
+
+# Eval data (sensitive)
+eval/data/*.pdf
+eval/eval_ground_truth.csv
+eval/results/*.csv
+eval/markdown/*.md

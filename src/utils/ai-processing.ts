@@ -143,15 +143,15 @@ export async function extractInvoiceInfo(
 Required fields (all can be null if not found):
 - items: array of strings describing what items/services are covered (can be empty array)
 - supplier: the name of the supplier/company that sent the invoice
-- amount: the total amount to pay (as a number, null if nothing to pay or there is a positive balance)
+- amount: the total amount to pay (as a number, null if nothing to pay). IMPORTANT: If this is a credit note or there is a credit balance ("belopp tillgodo", "tilgodehavende", etc.), set amount to null and put the credit in accountBalance instead. Never return a negative amount.
 - currency: the currency code (e.g. "DKK", "SEK", "EUR", "USD")
-- accountBalance: positive remaining credit balance in your favor (as a number, null if no balance - this is for cases where the customer has prepaid or overpaid)
+- accountBalance: positive credit balance in your favor (as a number, null if no balance). This is for credit notes or when the customer has prepaid/overpaid. If the document shows a negative total or "belopp tillgodo"/"tilgodehavende", put the absolute value here.
 - invoiceId: the invoice number or ID
-- accountIBAN: the IBAN (International Bank Account Number) if available
+- accountIBAN: the IBAN (International Bank Account Number) if available. Include the full IBAN without spaces.
 - accountBIC: the BIC/SWIFT code for international accounts if available
-- accountREG: the REG (registration number) for Danish accounts if available
-- accountNumber: the account number (for Danish accounts or if IBAN not available)
-- lastPaymentDate: the last payment date if mentioned, or null if not found
+- accountREG: the REG (registration number) - ONLY for Danish (DKK) invoices, leave null for other currencies
+- accountNumber: the account number - ONLY for Danish (DKK) invoices, leave null for other currencies
+- lastPaymentDate: the payment due date. Look for fields labeled: "Förfallodatum", "Betalningsdatum", "Sista betalningsdag", "Oss til handa", "Oss tillhanda", "Due date", "Forfaldsdato", "Betalingsdato". Return in YYYY-MM-DD format.
 - sourceFileReference: reference to the source file (use the first filename from: ${sourceFiles.join(', ')})
 
 Document content:
@@ -174,7 +174,7 @@ Return ONLY valid JSON in this exact format:
 }`;
 
   try {
-    const result = await ai.run('@cf/meta/llama-3.1-8b-instruct', {
+    const result = await ai.run('@cf/meta/llama-3.3-70b-instruct-fp8-fast', {
       messages: [
         {
           role: 'system',
@@ -185,27 +185,29 @@ Return ONLY valid JSON in this exact format:
           content: prompt,
         },
       ],
+      temperature: 0,
     });
 
-    const responseText = result.response || result.text || JSON.stringify(result);
+    const rawResponse = result.response ?? result.text ?? result;
+    const responseText = typeof rawResponse === 'string' ? rawResponse : JSON.stringify(rawResponse);
     
     // Try to extract JSON from the response
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const extracted = JSON.parse(jsonMatch[0]);
       return {
-        items: extracted.items || [],
-        supplier: extracted.supplier || null,
-        amount: extracted.amount || null,
-        currency: extracted.currency || null,
-        accountBalance: extracted.accountBalance || null,
-        invoiceId: extracted.invoiceId || null,
-        accountIBAN: extracted.accountIBAN || null,
-        accountBIC: extracted.accountBIC || null,
-        accountREG: extracted.accountREG || null,
-        accountNumber: extracted.accountNumber || null,
-        lastPaymentDate: extracted.lastPaymentDate || null,
-        sourceFileReference: extracted.sourceFileReference || sourceFiles[0] || null,
+        items: extracted.items ?? [],
+        supplier: extracted.supplier ?? null,
+        amount: extracted.amount ?? null,
+        currency: extracted.currency ?? null,
+        accountBalance: extracted.accountBalance ?? null,
+        invoiceId: extracted.invoiceId ?? null,
+        accountIBAN: extracted.accountIBAN ?? null,
+        accountBIC: extracted.accountBIC ?? null,
+        accountREG: extracted.accountREG ?? null,
+        accountNumber: extracted.accountNumber ?? null,
+        lastPaymentDate: extracted.lastPaymentDate ?? null,
+        sourceFileReference: extracted.sourceFileReference ?? sourceFiles[0] ?? null,
       };
     }
 
