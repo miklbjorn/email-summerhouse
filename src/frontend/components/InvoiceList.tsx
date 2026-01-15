@@ -15,8 +15,10 @@ type StatusFilter = 'all' | 'unpaid' | 'paid' | 'no_payment_due';
 
 function formatCurrency(amount: number | null, currency: string | null): string {
   if (amount === null) return '-';
-  const currencyCode = currency || 'DKK';
-  return amount.toLocaleString('da-DK', { style: 'currency', currency: currencyCode, currencyDisplay: 'code' });
+  if (!currency) {
+    return amount.toLocaleString('da-DK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  return amount.toLocaleString('da-DK', { style: 'currency', currency, currencyDisplay: 'code' });
 }
 
 function formatDate(dateString: string | null): string {
