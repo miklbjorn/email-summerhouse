@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,10 +7,10 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   line-height: 1.5;
-  color: #333;
-  background: #f5f5f5;
+  color: #ffffff;
+  background: #0a0a0a;
 }
 
 .layout {
@@ -17,17 +19,41 @@ body {
   padding: 1rem;
 }
 
-.layout h1 {
-  margin-bottom: 0.75rem;
-  color: #1a1a1a;
-  font-size: 1.25rem;
+.header-banner {
+  position: relative;
+  height: 100px;
+  margin: -1rem -1rem 1.5rem -1rem;
+  background: linear-gradient(135deg, #151515 0%, #1a1a1a 50%, #151515 100%);
+  border-radius: 0 0 16px 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 2rem 1rem 2rem;
+}
+
+.header-waves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.header-banner h1 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 /* Invoice List */
 .invoice-list {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333333;
   overflow: hidden;
 }
 
@@ -37,8 +63,8 @@ body {
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: #f9f9f9;
-  border-bottom: 1px solid #eee;
+  background: #222222;
+  border-bottom: 1px solid #333333;
 }
 
 .filter-group {
@@ -49,44 +75,45 @@ body {
 
 .filter-group label {
   font-size: 0.8rem;
-  color: #666;
+  color: #888888;
   font-weight: 500;
 }
 
 .filter-group select {
   padding: 0.35rem 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid #444444;
+  border-radius: 6px;
   font-size: 0.8rem;
-  background: white;
+  background: #2a2a2a;
+  color: #ffffff;
   cursor: pointer;
   min-width: 120px;
 }
 
 .filter-group select:hover {
-  border-color: #bbb;
+  border-color: #555555;
 }
 
 .filter-group select:focus {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  border-color: #4a9eff;
+  box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
 }
 
 .clear-filters-button {
   padding: 0.35rem 0.75rem;
-  background: #e5e7eb;
+  background: #333333;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.75rem;
   cursor: pointer;
-  color: #666;
+  color: #888888;
   margin-left: auto;
 }
 
 .clear-filters-button:hover {
-  background: #d1d5db;
-  color: #333;
+  background: #444444;
+  color: #ffffff;
 }
 
 .invoice-table {
@@ -98,14 +125,14 @@ body {
 .invoice-table td {
   padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #333333;
 }
 
 .invoice-table th {
-  background: #f9f9f9;
+  background: #222222;
   font-weight: 600;
   font-size: 0.875rem;
-  color: #666;
+  color: #888888;
 }
 
 .invoice-table th.sortable {
@@ -115,7 +142,7 @@ body {
 }
 
 .invoice-table th.sortable:hover {
-  background: #f0f0f0;
+  background: #2a2a2a;
 }
 
 .sort-icon {
@@ -124,7 +151,7 @@ body {
 }
 
 .sort-icon.inactive {
-  color: #ccc;
+  color: #555555;
 }
 
 .invoice-table tbody tr {
@@ -133,12 +160,12 @@ body {
 }
 
 .invoice-table tbody tr:hover {
-  background: #f5f9ff;
+  background: #2a2a2a;
 }
 
 .no-results {
   text-align: center;
-  color: #888;
+  color: #666666;
   padding: 2rem 1rem;
   font-style: italic;
 }
@@ -146,24 +173,24 @@ body {
 .status-badge {
   display: inline-block;
   padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 600;
 }
 
 .status-badge.paid {
-  background: #dcfce7;
-  color: #166534;
+  background: #1f2a1f;
+  color: #8faa7e;
 }
 
 .status-badge.unpaid {
-  background: #fef3c7;
-  color: #92400e;
+  background: #2a1f1f;
+  color: #b87c7c;
 }
 
 .status-badge.balance {
-  background: #dcfce7;
-  color: #166534;
+  background: #1f2a1f;
+  color: #8faa7e;
 }
 
 /* Invoice Detail - Side by Side Layout */
@@ -175,18 +202,18 @@ body {
 }
 
 .invoice-info-panel {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333333;
   padding: 1rem;
   overflow-y: auto;
   font-size: 0.85rem;
 }
 
 .source-file-panel {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333333;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -197,48 +224,51 @@ body {
   flex-wrap: wrap;
   gap: 0.35rem;
   padding: 0.5rem;
-  border-bottom: 1px solid #eee;
-  background: #f9f9f9;
+  border-bottom: 1px solid #333333;
+  background: #222222;
 }
 
 .source-file-tab {
   padding: 0.35rem 0.75rem;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  background: #2a2a2a;
+  border: 1px solid #444444;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.75rem;
+  color: #888888;
 }
 
 .source-file-tab:hover {
-  background: #f5f5f5;
+  background: #333333;
+  color: #ffffff;
 }
 
 .source-file-tab.active {
-  background: #2563eb;
+  background: #4a9eff;
   color: white;
-  border-color: #2563eb;
+  border-color: #4a9eff;
 }
 
 .download-link {
   margin-left: auto;
   padding: 0.35rem 0.75rem;
-  background: #f5f5f5;
-  border-radius: 4px;
+  background: #333333;
+  border-radius: 6px;
   font-size: 0.75rem;
   text-decoration: none;
-  color: #333;
+  color: #888888;
 }
 
 .download-link:hover {
-  background: #eee;
+  background: #444444;
+  color: #ffffff;
 }
 
 .source-file-content {
   flex: 1;
   overflow: auto;
   padding: 0.5rem;
-  background: #e5e5e5;
+  background: #111111;
 }
 
 .image-viewer {
@@ -262,20 +292,20 @@ body {
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #666;
+  color: #666666;
   gap: 1rem;
 }
 
 .unsupported-file a,
 .no-source-files a {
-  color: #2563eb;
+  color: #4a9eff;
 }
 
 /* Legacy class for backwards compat */
 .invoice-detail {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333333;
   padding: 1.5rem;
 }
 
@@ -285,16 +315,17 @@ body {
   gap: 0.25rem;
   margin-bottom: 0.75rem;
   padding: 0.35rem 0.75rem;
-  background: #f5f5f5;
+  background: #333333;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.75rem;
-  color: #333;
+  color: #888888;
 }
 
 .back-button:hover {
-  background: #eee;
+  background: #444444;
+  color: #ffffff;
 }
 
 .detail-section {
@@ -303,10 +334,10 @@ body {
 
 .detail-section h2 {
   font-size: 0.8rem;
-  color: #666;
+  color: #888888;
   margin-bottom: 0.5rem;
   padding-bottom: 0.25rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #333333;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -325,14 +356,14 @@ body {
 
 .detail-item dt {
   font-size: 0.65rem;
-  color: #888;
+  color: #666666;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
 .detail-item dd {
   font-size: 0.85rem;
-  color: #333;
+  color: #ffffff;
 }
 
 .items-list {
@@ -342,7 +373,7 @@ body {
 
 .items-list li {
   padding: 0.25rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #333333;
 }
 
 .items-list li:last-child {
@@ -359,15 +390,17 @@ body {
 
 .source-file-button {
   padding: 0.5rem 1rem;
-  background: #e5e7eb;
+  background: #333333;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.875rem;
+  color: #888888;
 }
 
 .source-file-button:hover {
-  background: #d1d5db;
+  background: #444444;
+  color: #ffffff;
 }
 
 /* Mark Paid Button */
@@ -376,10 +409,10 @@ body {
   align-items: center;
   gap: 0.25rem;
   padding: 0.5rem 1rem;
-  background: #059669;
-  color: white;
+  background: #22c55e;
+  color: #000000;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 500;
@@ -387,11 +420,12 @@ body {
 }
 
 .mark-paid-button:hover {
-  background: #047857;
+  background: #16a34a;
 }
 
 .mark-paid-button:disabled {
-  background: #9ca3af;
+  background: #444444;
+  color: #666666;
   cursor: not-allowed;
 }
 
@@ -399,7 +433,7 @@ body {
 .file-viewer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -407,8 +441,9 @@ body {
 }
 
 .file-viewer-modal {
-  background: white;
-  border-radius: 8px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333333;
   width: 90vw;
   max-width: 1000px;
   height: 85vh;
@@ -422,11 +457,12 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #333333;
 }
 
 .file-viewer-header span {
   font-weight: 500;
+  color: #ffffff;
 }
 
 .file-viewer-header-actions {
@@ -437,24 +473,26 @@ body {
 .file-viewer-header button,
 .file-viewer-header a {
   padding: 0.5rem 1rem;
-  background: #f5f5f5;
+  background: #333333;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.875rem;
   text-decoration: none;
-  color: #333;
+  color: #888888;
 }
 
 .file-viewer-header button:hover,
 .file-viewer-header a:hover {
-  background: #eee;
+  background: #444444;
+  color: #ffffff;
 }
 
 .file-viewer-content {
   flex: 1;
   overflow: auto;
   padding: 1rem;
+  background: #111111;
 }
 
 .file-viewer-content iframe {
@@ -474,14 +512,14 @@ body {
   align-items: center;
   justify-content: center;
   padding: 3rem;
-  color: #666;
+  color: #666666;
 }
 
 /* Empty state */
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #666;
+  color: #666666;
 }
 
 /* PDF Viewer */
@@ -496,8 +534,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.35rem 0.5rem;
-  background: #f5f5f5;
-  border-radius: 4px;
+  background: #222222;
+  border-radius: 6px;
   margin-bottom: 0.5rem;
   flex-shrink: 0;
 }
@@ -510,15 +548,17 @@ body {
 
 .pdf-nav button {
   padding: 0.25rem 0.5rem;
-  background: white;
-  border: 1px solid #ddd;
+  background: #333333;
+  border: 1px solid #444444;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
+  color: #888888;
 }
 
 .pdf-nav button:hover:not(:disabled) {
-  background: #eee;
+  background: #444444;
+  color: #ffffff;
 }
 
 .pdf-nav button:disabled {
@@ -528,7 +568,7 @@ body {
 
 .pdf-nav span {
   font-size: 0.7rem;
-  color: #666;
+  color: #888888;
 }
 
 .pdf-zoom {
@@ -539,16 +579,18 @@ body {
 
 .pdf-zoom button {
   padding: 0.25rem 0.5rem;
-  background: white;
-  border: 1px solid #ddd;
+  background: #333333;
+  border: 1px solid #444444;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
   min-width: 2rem;
+  color: #888888;
 }
 
 .pdf-zoom button:hover:not(:disabled) {
-  background: #eee;
+  background: #444444;
+  color: #ffffff;
 }
 
 .pdf-zoom button:disabled {
@@ -561,8 +603,8 @@ body {
   overflow: auto;
   display: flex;
   justify-content: center;
-  background: #e5e5e5;
-  border-radius: 4px;
+  background: #111111;
+  border-radius: 6px;
 }
 
 .pdf-document-container .react-pdf__Document {
@@ -585,7 +627,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 3rem;
-  color: #666;
+  color: #666666;
 }
 
 .pdf-error {
@@ -595,11 +637,11 @@ body {
   justify-content: center;
   height: 100%;
   gap: 1rem;
-  color: #666;
+  color: #666666;
 }
 
 .pdf-error a {
-  color: #2563eb;
+  color: #4a9eff;
   text-decoration: underline;
 }
 
@@ -615,8 +657,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.35rem 0.5rem;
-  background: #f5f5f5;
-  border-radius: 4px;
+  background: #222222;
+  border-radius: 6px;
   margin-bottom: 0.5rem;
   flex-shrink: 0;
 }
@@ -629,16 +671,18 @@ body {
 
 .image-zoom button {
   padding: 0.25rem 0.5rem;
-  background: white;
-  border: 1px solid #ddd;
+  background: #333333;
+  border: 1px solid #444444;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
   min-width: 2rem;
+  color: #888888;
 }
 
 .image-zoom button:hover:not(:disabled) {
-  background: #eee;
+  background: #444444;
+  color: #ffffff;
 }
 
 .image-zoom button:disabled {
@@ -648,7 +692,7 @@ body {
 
 .image-zoom span {
   font-size: 0.7rem;
-  color: #666;
+  color: #888888;
   min-width: 3rem;
   text-align: center;
 }
@@ -660,21 +704,23 @@ body {
 
 .image-fit-controls button {
   padding: 0.25rem 0.5rem;
-  background: white;
-  border: 1px solid #ddd;
+  background: #333333;
+  border: 1px solid #444444;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
+  color: #888888;
 }
 
 .image-fit-controls button:hover {
-  background: #eee;
+  background: #444444;
+  color: #ffffff;
 }
 
 .image-fit-controls button.active {
-  background: #2563eb;
+  background: #4a9eff;
   color: white;
-  border-color: #2563eb;
+  border-color: #4a9eff;
 }
 
 .image-viewport {
@@ -683,8 +729,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e5e5e5;
-  border-radius: 4px;
+  background: #111111;
+  border-radius: 6px;
   position: relative;
 }
 
@@ -728,7 +774,7 @@ body {
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  color: #888;
+  color: #666666;
   opacity: 0;
   transition: opacity 0.15s, color 0.15s, background 0.15s;
 }
@@ -738,12 +784,12 @@ body {
 }
 
 .copy-button:hover {
-  background: #e5e5e5;
-  color: #333;
+  background: #333333;
+  color: #ffffff;
 }
 
 .copy-button:active {
-  background: #d5d5d5;
+  background: #444444;
 }
 
 .copy-button svg {
@@ -754,7 +800,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -762,24 +808,24 @@ body {
 }
 
 .modal-content {
-  background: white;
-  border-radius: 8px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333333;
   padding: 1.5rem;
   max-width: 400px;
   width: 90%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .modal-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #ffffff;
   margin-bottom: 0.75rem;
 }
 
 .modal-message {
   font-size: 0.9rem;
-  color: #666;
+  color: #888888;
   margin-bottom: 1.5rem;
   line-height: 1.5;
 }
@@ -792,7 +838,7 @@ body {
 
 .modal-button {
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
@@ -801,21 +847,22 @@ body {
 }
 
 .modal-button.cancel {
-  background: #e5e7eb;
-  color: #333;
+  background: #333333;
+  color: #888888;
 }
 
 .modal-button.cancel:hover {
-  background: #d1d5db;
+  background: #444444;
+  color: #ffffff;
 }
 
 .modal-button.confirm {
-  background: #dc2626;
+  background: #ef4444;
   color: white;
 }
 
 .modal-button.confirm:hover {
-  background: #b91c1c;
+  background: #dc2626;
 }
 
 /* Delete Button */
@@ -824,10 +871,10 @@ body {
   align-items: center;
   gap: 0.25rem;
   padding: 0.5rem 1rem;
-  background: #dc2626;
+  background: #ef4444;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 500;
@@ -835,11 +882,12 @@ body {
 }
 
 .delete-button:hover {
-  background: #b91c1c;
+  background: #dc2626;
 }
 
 .delete-button:disabled {
-  background: #9ca3af;
+  background: #444444;
+  color: #666666;
   cursor: not-allowed;
 }
 
@@ -847,9 +895,9 @@ body {
 .delete-button-small {
   padding: 0.3rem 0.6rem;
   background: transparent;
-  color: #dc2626;
-  border: 1px solid #dc2626;
-  border-radius: 4px;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.75rem;
   font-weight: 500;
@@ -857,7 +905,7 @@ body {
 }
 
 .delete-button-small:hover {
-  background: #dc2626;
+  background: #ef4444;
   color: white;
 }
 
@@ -894,14 +942,16 @@ body {
 .edit-input {
   width: 100%;
   padding: 0.35rem 0.5rem;
-  border: 1px solid #2563eb;
-  border-radius: 4px;
+  border: 1px solid #4a9eff;
+  border-radius: 6px;
   font-size: 0.85rem;
   outline: none;
+  background: #2a2a2a;
+  color: #ffffff;
 }
 
 .edit-input:focus {
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
 }
 
 .edit-actions {
@@ -916,29 +966,30 @@ body {
   justify-content: center;
   padding: 0.25rem;
   background: transparent;
-  border: 1px solid #ddd;
+  border: 1px solid #444444;
   border-radius: 3px;
   cursor: pointer;
-  color: #666;
+  color: #888888;
   transition: all 0.15s;
 }
 
 .edit-action-button.save {
-  color: #059669;
-  border-color: #059669;
+  color: #22c55e;
+  border-color: #22c55e;
 }
 
 .edit-action-button.save:hover {
-  background: #059669;
-  color: white;
+  background: #22c55e;
+  color: #000000;
 }
 
 .edit-action-button.cancel {
-  color: #666;
+  color: #888888;
 }
 
 .edit-action-button.cancel:hover {
-  background: #e5e5e5;
+  background: #333333;
+  color: #ffffff;
 }
 
 .edit-action-button:disabled {
@@ -955,7 +1006,7 @@ body {
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  color: #888;
+  color: #666666;
   opacity: 0;
   transition: opacity 0.15s, color 0.15s, background 0.15s;
 }
@@ -965,17 +1016,17 @@ body {
 }
 
 .edit-button:hover {
-  background: #e5e5e5;
-  color: #2563eb;
+  background: #333333;
+  color: #4a9eff;
 }
 
 /* Manually edited indicator */
 .manually-edited dt {
-  color: #2563eb;
+  color: #4a9eff;
 }
 
 .edited-indicator {
-  color: #2563eb;
+  color: #4a9eff;
   font-weight: bold;
   margin-left: 0.25rem;
 }
@@ -989,14 +1040,15 @@ body {
 
 .status-select {
   padding: 0.35rem 0.5rem;
-  border: 1px solid #2563eb;
-  border-radius: 4px;
+  border: 1px solid #4a9eff;
+  border-radius: 6px;
   font-size: 0.8rem;
-  background: white;
+  background: #2a2a2a;
+  color: #ffffff;
   cursor: pointer;
   outline: none;
 }
 
 .status-select:focus {
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
 }
