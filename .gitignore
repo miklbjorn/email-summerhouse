@@ -172,3 +172,4 @@ dist
 # Eval data (sensitive)
 eval/data/*.pdf
 eval/eval_ground_truth.csv
+eval/results/*.csv

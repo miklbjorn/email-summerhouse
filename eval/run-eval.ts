@@ -16,6 +16,7 @@ const API_URL = process.env.EVAL_API_URL || 'http://localhost:8788';
 const EVAL_DIR = path.dirname(new URL(import.meta.url).pathname);
 const DATA_DIR = path.join(EVAL_DIR, 'data');
 const GROUND_TRUTH_PATH = path.join(EVAL_DIR, 'eval_ground_truth.csv');
+const RESULTS_DIR = path.join(EVAL_DIR, 'results');
 
 interface GroundTruth {
   filename: string;
@@ -314,11 +315,66 @@ async function runEval(): Promise<void> {
     }
   }
 
+  // Write detailed results to CSV
+  writeResultsCSV(results);
+
   // Exit with error code if there were failures
   const failedCount = results.length - successfulResults.length;
   if (failedCount > 0) {
     process.exit(1);
   }
+}
+
+function escapeCSV(value: string | number | null | undefined): string {
+  if (value === null || value === undefined) return '';
+  const str = String(value);
+  // Escape quotes and wrap in quotes if contains comma, quote, or newline
+  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+function writeResultsCSV(results: EvalResult[]): void {
+  // Ensure results directory exists
+  if (!fs.existsSync(RESULTS_DIR)) {
+    fs.mkdirSync(RESULTS_DIR, { recursive: true });
+  }
+
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const csvPath = path.join(RESULTS_DIR, `eval-results-${timestamp}.csv`);
+
+  const rows: string[] = [];
+
+  // Header
+  rows.push('File,Field,Ground truth,Extracted value,Correct');
+
+  // Data rows
+  for (const result of results) {
+    if (result.success) {
+      for (const comparison of result.comparisons) {
+        rows.push([
+          escapeCSV(result.filename),
+          escapeCSV(comparison.field),
+          escapeCSV(comparison.expected),
+          escapeCSV(comparison.actual),
+          comparison.match ? 'Yes' : 'No',
+        ].join(','));
+      }
+    } else {
+      // For failed extractions, add a single row indicating the error
+      rows.push([
+        escapeCSV(result.filename),
+        'ERROR',
+        '',
+        escapeCSV(result.error),
+        'No',
+      ].join(','));
+    }
+  }
+
+  fs.writeFileSync(csvPath, rows.join('\n'), 'utf-8');
+  console.log(`\nDetailed results written to: ${csvPath}`);
 }
 
 runEval().catch((error) => {
