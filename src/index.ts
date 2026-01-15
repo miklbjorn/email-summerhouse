@@ -224,7 +224,7 @@ async function handleApiRequest(
 ): Promise<Response> {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, PATCH, DELETE, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Cf-Access-Jwt-Assertion',
     'Content-Type': 'application/json',
   };
@@ -243,6 +243,61 @@ async function handleApiRequest(
       status: 401,
       headers: corsHeaders,
     });
+  }
+
+  // POST /api/extract - Extract invoice data without persisting (for eval)
+  // This endpoint is only available in development mode
+  if (path === '/api/extract' && request.method === 'POST') {
+    if (!isDev) {
+      return new Response(JSON.stringify({ error: 'Extract endpoint only available in development' }), {
+        status: 403,
+        headers: corsHeaders,
+      });
+    }
+
+    try {
+      const formData = await request.formData();
+      const file = formData.get('file') as File | null;
+
+      if (!file) {
+        return new Response(JSON.stringify({ error: 'No file provided' }), {
+          status: 400,
+          headers: corsHeaders,
+        });
+      }
+
+      const arrayBuffer = await file.arrayBuffer();
+      const attachments = [{
+        filename: file.name,
+        contentType: file.type || 'application/pdf',
+        data: arrayBuffer,
+      }];
+
+      // Convert to markdown
+      const markdownFiles = await processEmailAndAttachmentsToMarkdown(
+        env.AI,
+        undefined,
+        undefined,
+        attachments
+      );
+
+      // Extract invoice info
+      const extraction = await extractInvoiceInfo(env.AI, markdownFiles);
+
+      return new Response(JSON.stringify({
+        extraction,
+        markdown: markdownFiles,
+      }), { headers: corsHeaders });
+    } catch (error) {
+      console.error('Extraction error:', error);
+      return new Response(JSON.stringify({
+        error: 'Extraction failed',
+        details: error instanceof Error ? error.message : String(error)
+      }), {
+        status: 500,
+        headers: corsHeaders,
+      });
+    }
   }
 
   try {
