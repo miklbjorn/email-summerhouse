@@ -9,8 +9,8 @@
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   line-height: 1.5;
-  color: #ffffff;
-  background: #0a0a0a;
+  color: #333333;
+  background: #f5f5f5;
 }
 
 .layout {
@@ -23,7 +23,7 @@ body {
   position: relative;
   height: 100px;
   margin: -1rem -1rem 1.5rem -1rem;
-  background: linear-gradient(135deg, #151515 0%, #1a1a1a 50%, #151515 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #252525 50%, #1a1a1a 100%);
   border-radius: 0 0 16px 16px;
   overflow: hidden;
   display: flex;
@@ -51,9 +51,9 @@ body {
 
 /* Invoice List */
 .invoice-list {
-  background: #1a1a1a;
+  background: #e5e5e5;
   border-radius: 12px;
-  border: 1px solid #333333;
+  border: 1px solid #d0d0d0;
   overflow: hidden;
 }
 
@@ -63,8 +63,8 @@ body {
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: #222222;
-  border-bottom: 1px solid #333333;
+  background: #f0f0f0;
+  border-bottom: 1px solid #d0d0d0;
 }
 
 .filter-group {
@@ -74,46 +74,46 @@ body {
 }
 
 .filter-group label {
-  font-size: 0.8rem;
-  color: #888888;
+  font-size: 0.75rem;
+  color: #666666;
   font-weight: 500;
 }
 
 .filter-group select {
   padding: 0.35rem 0.5rem;
-  border: 1px solid #444444;
+  border: 1px solid #cccccc;
   border-radius: 6px;
-  font-size: 0.8rem;
-  background: #2a2a2a;
-  color: #ffffff;
+  font-size: 0.75rem;
+  background: white;
+  color: #333333;
   cursor: pointer;
   min-width: 120px;
 }
 
 .filter-group select:hover {
-  border-color: #555555;
+  border-color: #999999;
 }
 
 .filter-group select:focus {
   outline: none;
-  border-color: #4a9eff;
-  box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 .clear-filters-button {
   padding: 0.35rem 0.75rem;
-  background: #333333;
+  background: #d5d5d5;
   border: none;
   border-radius: 6px;
   font-size: 0.75rem;
   cursor: pointer;
-  color: #888888;
+  color: #666666;
   margin-left: auto;
 }
 
 .clear-filters-button:hover {
-  background: #444444;
-  color: #ffffff;
+  background: #c5c5c5;
+  color: #333333;
 }
 
 .invoice-table {
@@ -125,14 +125,15 @@ body {
 .invoice-table td {
   padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #333333;
+  border-bottom: 1px solid #d0d0d0;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .invoice-table th {
-  background: #222222;
+  background: #f0f0f0;
   font-weight: 600;
-  font-size: 0.875rem;
-  color: #888888;
+  color: #555555;
 }
 
 .invoice-table th.sortable {
@@ -142,7 +143,7 @@ body {
 }
 
 .invoice-table th.sortable:hover {
-  background: #2a2a2a;
+  background: #e8e8e8;
 }
 
 .sort-icon {
@@ -151,7 +152,7 @@ body {
 }
 
 .sort-icon.inactive {
-  color: #555555;
+  color: #aaaaaa;
 }
 
 .invoice-table tbody tr {
@@ -160,12 +161,12 @@ body {
 }
 
 .invoice-table tbody tr:hover {
-  background: #2a2a2a;
+  background: #f0f0f0;
 }
 
 .no-results {
   text-align: center;
-  color: #666666;
+  color: #888888;
   padding: 2rem 1rem;
   font-style: italic;
 }
@@ -179,18 +180,18 @@ body {
 }
 
 .status-badge.paid {
-  background: #1f2a1f;
-  color: #8faa7e;
+  background: #dcfce7;
+  color: #166534;
 }
 
 .status-badge.unpaid {
-  background: #2a1f1f;
-  color: #b87c7c;
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .status-badge.balance {
-  background: #1f2a1f;
-  color: #8faa7e;
+  background: #dcfce7;
+  color: #166534;
 }
 
 /* Invoice Detail - Side by Side Layout */
@@ -202,18 +203,18 @@ body {
 }
 
 .invoice-info-panel {
-  background: #1a1a1a;
+  background: #e5e5e5;
   border-radius: 12px;
-  border: 1px solid #333333;
+  border: 1px solid #d0d0d0;
   padding: 1rem;
   overflow-y: auto;
   font-size: 0.85rem;
 }
 
 .source-file-panel {
-  background: #1a1a1a;
+  background: #e5e5e5;
   border-radius: 12px;
-  border: 1px solid #333333;
+  border: 1px solid #d0d0d0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -224,51 +225,51 @@ body {
   flex-wrap: wrap;
   gap: 0.35rem;
   padding: 0.5rem;
-  border-bottom: 1px solid #333333;
-  background: #222222;
+  border-bottom: 1px solid #d0d0d0;
+  background: #f0f0f0;
 }
 
 .source-file-tab {
   padding: 0.35rem 0.75rem;
-  background: #2a2a2a;
-  border: 1px solid #444444;
+  background: white;
+  border: 1px solid #cccccc;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.75rem;
-  color: #888888;
+  color: #666666;
 }
 
 .source-file-tab:hover {
-  background: #333333;
-  color: #ffffff;
+  background: #f5f5f5;
+  color: #333333;
 }
 
 .source-file-tab.active {
-  background: #4a9eff;
+  background: #2563eb;
   color: white;
-  border-color: #4a9eff;
+  border-color: #2563eb;
 }
 
 .download-link {
   margin-left: auto;
   padding: 0.35rem 0.75rem;
-  background: #333333;
+  background: #d5d5d5;
   border-radius: 6px;
   font-size: 0.75rem;
   text-decoration: none;
-  color: #888888;
+  color: #666666;
 }
 
 .download-link:hover {
-  background: #444444;
-  color: #ffffff;
+  background: #c5c5c5;
+  color: #333333;
 }
 
 .source-file-content {
   flex: 1;
   overflow: auto;
   padding: 0.5rem;
-  background: #111111;
+  background: #d0d0d0;
 }
 
 .image-viewer {
@@ -292,20 +293,20 @@ body {
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #666666;
+  color: #888888;
   gap: 1rem;
 }
 
 .unsupported-file a,
 .no-source-files a {
-  color: #4a9eff;
+  color: #2563eb;
 }
 
 /* Legacy class for backwards compat */
 .invoice-detail {
-  background: #1a1a1a;
+  background: #e5e5e5;
   border-radius: 12px;
-  border: 1px solid #333333;
+  border: 1px solid #d0d0d0;
   padding: 1.5rem;
 }
 
@@ -315,17 +316,17 @@ body {
   gap: 0.25rem;
   margin-bottom: 0.75rem;
   padding: 0.35rem 0.75rem;
-  background: #333333;
+  background: #d5d5d5;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.75rem;
-  color: #888888;
+  color: #666666;
 }
 
 .back-button:hover {
-  background: #444444;
-  color: #ffffff;
+  background: #c5c5c5;
+  color: #333333;
 }
 
 .detail-section {
@@ -334,10 +335,10 @@ body {
 
 .detail-section h2 {
   font-size: 0.8rem;
-  color: #888888;
+  color: #666666;
   margin-bottom: 0.5rem;
   padding-bottom: 0.25rem;
-  border-bottom: 1px solid #333333;
+  border-bottom: 1px solid #d0d0d0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -356,14 +357,14 @@ body {
 
 .detail-item dt {
   font-size: 0.65rem;
-  color: #666666;
+  color: #888888;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
 .detail-item dd {
   font-size: 0.85rem;
-  color: #ffffff;
+  color: #333333;
 }
 
 .items-list {
@@ -373,7 +374,7 @@ body {
 
 .items-list li {
   padding: 0.25rem 0;
-  border-bottom: 1px solid #333333;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .items-list li:last-child {
@@ -390,17 +391,17 @@ body {
 
 .source-file-button {
   padding: 0.5rem 1rem;
-  background: #333333;
+  background: #d5d5d5;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.875rem;
-  color: #888888;
+  color: #666666;
 }
 
 .source-file-button:hover {
-  background: #444444;
-  color: #ffffff;
+  background: #c5c5c5;
+  color: #333333;
 }
 
 /* Mark Paid Button */
@@ -410,7 +411,7 @@ body {
   gap: 0.25rem;
   padding: 0.5rem 1rem;
   background: #22c55e;
-  color: #000000;
+  color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -424,8 +425,8 @@ body {
 }
 
 .mark-paid-button:disabled {
-  background: #444444;
-  color: #666666;
+  background: #cccccc;
+  color: #888888;
   cursor: not-allowed;
 }
 
@@ -433,7 +434,7 @@ body {
 .file-viewer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -441,9 +442,9 @@ body {
 }
 
 .file-viewer-modal {
-  background: #1a1a1a;
+  background: #e5e5e5;
   border-radius: 12px;
-  border: 1px solid #333333;
+  border: 1px solid #d0d0d0;
   width: 90vw;
   max-width: 1000px;
   height: 85vh;
@@ -457,12 +458,12 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid #333333;
+  border-bottom: 1px solid #d0d0d0;
 }
 
 .file-viewer-header span {
   font-weight: 500;
-  color: #ffffff;
+  color: #333333;
 }
 
 .file-viewer-header-actions {
@@ -473,26 +474,26 @@ body {
 .file-viewer-header button,
 .file-viewer-header a {
   padding: 0.5rem 1rem;
-  background: #333333;
+  background: #d5d5d5;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.875rem;
   text-decoration: none;
-  color: #888888;
+  color: #666666;
 }
 
 .file-viewer-header button:hover,
 .file-viewer-header a:hover {
-  background: #444444;
-  color: #ffffff;
+  background: #c5c5c5;
+  color: #333333;
 }
 
 .file-viewer-content {
   flex: 1;
   overflow: auto;
   padding: 1rem;
-  background: #111111;
+  background: #d0d0d0;
 }
 
 .file-viewer-content iframe {
@@ -512,14 +513,14 @@ body {
   align-items: center;
   justify-content: center;
   padding: 3rem;
-  color: #666666;
+  color: #888888;
 }
 
 /* Empty state */
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #666666;
+  color: #888888;
 }
 
 /* PDF Viewer */
@@ -534,7 +535,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.35rem 0.5rem;
-  background: #222222;
+  background: #f0f0f0;
   border-radius: 6px;
   margin-bottom: 0.5rem;
   flex-shrink: 0;
@@ -548,17 +549,17 @@ body {
 
 .pdf-nav button {
   padding: 0.25rem 0.5rem;
-  background: #333333;
-  border: 1px solid #444444;
+  background: white;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
-  color: #888888;
+  color: #666666;
 }
 
 .pdf-nav button:hover:not(:disabled) {
-  background: #444444;
-  color: #ffffff;
+  background: #f5f5f5;
+  color: #333333;
 }
 
 .pdf-nav button:disabled {
@@ -568,7 +569,7 @@ body {
 
 .pdf-nav span {
   font-size: 0.7rem;
-  color: #888888;
+  color: #666666;
 }
 
 .pdf-zoom {
@@ -579,18 +580,18 @@ body {
 
 .pdf-zoom button {
   padding: 0.25rem 0.5rem;
-  background: #333333;
-  border: 1px solid #444444;
+  background: white;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
   min-width: 2rem;
-  color: #888888;
+  color: #666666;
 }
 
 .pdf-zoom button:hover:not(:disabled) {
-  background: #444444;
-  color: #ffffff;
+  background: #f5f5f5;
+  color: #333333;
 }
 
 .pdf-zoom button:disabled {
@@ -603,7 +604,7 @@ body {
   overflow: auto;
   display: flex;
   justify-content: center;
-  background: #111111;
+  background: #d0d0d0;
   border-radius: 6px;
 }
 
@@ -627,7 +628,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 3rem;
-  color: #666666;
+  color: #888888;
 }
 
 .pdf-error {
@@ -637,11 +638,11 @@ body {
   justify-content: center;
   height: 100%;
   gap: 1rem;
-  color: #666666;
+  color: #888888;
 }
 
 .pdf-error a {
-  color: #4a9eff;
+  color: #2563eb;
   text-decoration: underline;
 }
 
@@ -657,7 +658,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.35rem 0.5rem;
-  background: #222222;
+  background: #f0f0f0;
   border-radius: 6px;
   margin-bottom: 0.5rem;
   flex-shrink: 0;
@@ -671,18 +672,18 @@ body {
 
 .image-zoom button {
   padding: 0.25rem 0.5rem;
-  background: #333333;
-  border: 1px solid #444444;
+  background: white;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
   min-width: 2rem;
-  color: #888888;
+  color: #666666;
 }
 
 .image-zoom button:hover:not(:disabled) {
-  background: #444444;
-  color: #ffffff;
+  background: #f5f5f5;
+  color: #333333;
 }
 
 .image-zoom button:disabled {
@@ -692,7 +693,7 @@ body {
 
 .image-zoom span {
   font-size: 0.7rem;
-  color: #888888;
+  color: #666666;
   min-width: 3rem;
   text-align: center;
 }
@@ -704,23 +705,23 @@ body {
 
 .image-fit-controls button {
   padding: 0.25rem 0.5rem;
-  background: #333333;
-  border: 1px solid #444444;
+  background: white;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
-  color: #888888;
+  color: #666666;
 }
 
 .image-fit-controls button:hover {
-  background: #444444;
-  color: #ffffff;
+  background: #f5f5f5;
+  color: #333333;
 }
 
 .image-fit-controls button.active {
-  background: #4a9eff;
+  background: #2563eb;
   color: white;
-  border-color: #4a9eff;
+  border-color: #2563eb;
 }
 
 .image-viewport {
@@ -729,7 +730,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #111111;
+  background: #d0d0d0;
   border-radius: 6px;
   position: relative;
 }
@@ -774,7 +775,7 @@ body {
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  color: #666666;
+  color: #888888;
   opacity: 0;
   transition: opacity 0.15s, color 0.15s, background 0.15s;
 }
@@ -784,12 +785,12 @@ body {
 }
 
 .copy-button:hover {
-  background: #333333;
-  color: #ffffff;
+  background: #d5d5d5;
+  color: #333333;
 }
 
 .copy-button:active {
-  background: #444444;
+  background: #c5c5c5;
 }
 
 .copy-button svg {
@@ -800,7 +801,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -808,24 +809,25 @@ body {
 }
 
 .modal-content {
-  background: #1a1a1a;
+  background: white;
   border-radius: 12px;
-  border: 1px solid #333333;
+  border: 1px solid #d0d0d0;
   padding: 1.5rem;
   max-width: 400px;
   width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .modal-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #333333;
   margin-bottom: 0.75rem;
 }
 
 .modal-message {
   font-size: 0.9rem;
-  color: #888888;
+  color: #666666;
   margin-bottom: 1.5rem;
   line-height: 1.5;
 }
@@ -847,13 +849,13 @@ body {
 }
 
 .modal-button.cancel {
-  background: #333333;
-  color: #888888;
+  background: #e5e5e5;
+  color: #666666;
 }
 
 .modal-button.cancel:hover {
-  background: #444444;
-  color: #ffffff;
+  background: #d5d5d5;
+  color: #333333;
 }
 
 .modal-button.confirm {
@@ -886,8 +888,8 @@ body {
 }
 
 .delete-button:disabled {
-  background: #444444;
-  color: #666666;
+  background: #cccccc;
+  color: #888888;
   cursor: not-allowed;
 }
 
@@ -942,16 +944,16 @@ body {
 .edit-input {
   width: 100%;
   padding: 0.35rem 0.5rem;
-  border: 1px solid #4a9eff;
+  border: 1px solid #2563eb;
   border-radius: 6px;
   font-size: 0.85rem;
   outline: none;
-  background: #2a2a2a;
-  color: #ffffff;
+  background: white;
+  color: #333333;
 }
 
 .edit-input:focus {
-  box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 .edit-actions {
@@ -966,10 +968,10 @@ body {
   justify-content: center;
   padding: 0.25rem;
   background: transparent;
-  border: 1px solid #444444;
+  border: 1px solid #cccccc;
   border-radius: 3px;
   cursor: pointer;
-  color: #888888;
+  color: #666666;
   transition: all 0.15s;
 }
 
@@ -980,16 +982,16 @@ body {
 
 .edit-action-button.save:hover {
   background: #22c55e;
-  color: #000000;
+  color: white;
 }
 
 .edit-action-button.cancel {
-  color: #888888;
+  color: #666666;
 }
 
 .edit-action-button.cancel:hover {
-  background: #333333;
-  color: #ffffff;
+  background: #e5e5e5;
+  color: #333333;
 }
 
 .edit-action-button:disabled {
@@ -1006,7 +1008,7 @@ body {
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  color: #666666;
+  color: #888888;
   opacity: 0;
   transition: opacity 0.15s, color 0.15s, background 0.15s;
 }
@@ -1016,17 +1018,17 @@ body {
 }
 
 .edit-button:hover {
-  background: #333333;
-  color: #4a9eff;
+  background: #e5e5e5;
+  color: #2563eb;
 }
 
 /* Manually edited indicator */
 .manually-edited dt {
-  color: #4a9eff;
+  color: #2563eb;
 }
 
 .edited-indicator {
-  color: #4a9eff;
+  color: #2563eb;
   font-weight: bold;
   margin-left: 0.25rem;
 }
@@ -1040,15 +1042,15 @@ body {
 
 .status-select {
   padding: 0.35rem 0.5rem;
-  border: 1px solid #4a9eff;
+  border: 1px solid #2563eb;
   border-radius: 6px;
   font-size: 0.8rem;
-  background: #2a2a2a;
-  color: #ffffff;
+  background: white;
+  color: #333333;
   cursor: pointer;
   outline: none;
 }
 
 .status-select:focus {
-  box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
