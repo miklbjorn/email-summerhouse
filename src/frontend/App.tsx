@@ -56,7 +56,10 @@ export function App() {
       {selectedInvoiceId ? (
         <InvoiceDetail
           invoiceId={selectedInvoiceId}
-          onBack={() => setSelectedInvoiceId(null)}
+          onBack={() => {
+            fetchInvoices();
+            setSelectedInvoiceId(null);
+          }}
           onMarkPaid={handleMarkPaid}
           onDelete={handleDelete}
         />
