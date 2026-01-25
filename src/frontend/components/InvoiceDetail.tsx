@@ -5,6 +5,7 @@ import { CopyableField } from './CopyableField';
 import { EditableField } from './EditableField';
 import { StatusSelect } from './StatusSelect';
 import { ConfirmModal } from './ConfirmModal';
+import { CommentThread } from './CommentThread';
 import type { InvoiceDetail as InvoiceDetailType, InvoiceStatus } from '../types/invoice';
 
 interface Props {
@@ -257,6 +258,10 @@ export function InvoiceDetail({ invoiceId, onBack, onMarkPaid, onDelete, onUpdat
           >
             {deleting ? 'Deleting...' : 'Delete Invoice'}
           </button>
+        </div>
+
+        <div className="detail-section">
+          <CommentThread invoiceId={invoice.id} />
         </div>
       </div>
 

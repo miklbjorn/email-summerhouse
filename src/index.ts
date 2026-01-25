@@ -35,6 +35,7 @@ import {
 } from './utils/database';
 import { generateReplyEmail, generateErrorReplyEmail } from './utils/email-replies';
 import { getAllInvoices, getInvoiceById, updateInvoice, deleteInvoice, type InvoiceUpdateRequest } from './api/invoices';
+import { getCommentsByInvoiceId, createComment, updateComment, deleteComment, type CreateCommentRequest, type UpdateCommentRequest } from './api/comments';
 import { serveFileFromR2 } from './api/files';
 import { verifyAccessJWT } from './utils/auth';
 
@@ -370,6 +371,64 @@ async function handleApiRequest(
     if (path.startsWith('/api/files/') && request.method === 'GET') {
       const filePath = decodeURIComponent(path.replace('/api/files/', ''));
       return serveFileFromR2(env.R2, filePath);
+    }
+
+    // GET /api/invoices/:id/comments - Get comments for an invoice
+    const commentsMatch = path.match(/^\/api\/invoices\/(\d+)\/comments$/);
+    if (commentsMatch && request.method === 'GET') {
+      const comments = await getCommentsByInvoiceId(env.DB, parseInt(commentsMatch[1]));
+      return new Response(JSON.stringify(comments), { headers: corsHeaders });
+    }
+
+    // POST /api/invoices/:id/comments - Create a new comment
+    if (commentsMatch && request.method === 'POST') {
+      const body = await request.json() as CreateCommentRequest;
+      if (!body.content || body.content.trim() === '') {
+        return new Response(JSON.stringify({ error: 'Content is required' }), {
+          status: 400,
+          headers: corsHeaders,
+        });
+      }
+      const comment = await createComment(env.DB, parseInt(commentsMatch[1]), body.content.trim());
+      if (!comment) {
+        return new Response(JSON.stringify({ error: 'Failed to create comment' }), {
+          status: 500,
+          headers: corsHeaders,
+        });
+      }
+      return new Response(JSON.stringify(comment), { headers: corsHeaders, status: 201 });
+    }
+
+    // PATCH /api/comments/:id - Update a comment
+    const commentMatch = path.match(/^\/api\/comments\/(\d+)$/);
+    if (commentMatch && request.method === 'PATCH') {
+      const body = await request.json() as UpdateCommentRequest;
+      if (!body.content || body.content.trim() === '') {
+        return new Response(JSON.stringify({ error: 'Content is required' }), {
+          status: 400,
+          headers: corsHeaders,
+        });
+      }
+      const comment = await updateComment(env.DB, parseInt(commentMatch[1]), body.content.trim());
+      if (!comment) {
+        return new Response(JSON.stringify({ error: 'Not found' }), {
+          status: 404,
+          headers: corsHeaders,
+        });
+      }
+      return new Response(JSON.stringify(comment), { headers: corsHeaders });
+    }
+
+    // DELETE /api/comments/:id - Delete a comment
+    if (commentMatch && request.method === 'DELETE') {
+      const success = await deleteComment(env.DB, parseInt(commentMatch[1]));
+      if (!success) {
+        return new Response(JSON.stringify({ error: 'Not found' }), {
+          status: 404,
+          headers: corsHeaders,
+        });
+      }
+      return new Response(JSON.stringify({ success: true }), { headers: corsHeaders });
     }
 
     return new Response(JSON.stringify({ error: 'Not found' }), {

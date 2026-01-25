@@ -13,6 +13,7 @@ const STATUS_OPTIONS: { value: InvoiceStatus; label: string }[] = [
   { value: 'unpaid', label: 'Unpaid' },
   { value: 'paid', label: 'Paid' },
   { value: 'no_payment_due', label: 'All good (no payment due)' },
+  { value: 'check_up', label: 'Check up!' },
 ];
 
 export function StatusSelect({ status, paidAt, isEdited = false, onSave, formatDate }: Props) {
@@ -41,6 +42,8 @@ export function StatusSelect({ status, paidAt, isEdited = false, onSave, formatD
       return `Paid on ${formatDate(paidAt)}`;
     } else if (status === 'no_payment_due') {
       return 'All good';
+    } else if (status === 'check_up') {
+      return 'Check up!';
     }
     return 'Unpaid';
   };
@@ -48,6 +51,7 @@ export function StatusSelect({ status, paidAt, isEdited = false, onSave, formatD
   const getStatusClass = () => {
     if (status === 'paid') return 'paid';
     if (status === 'no_payment_due') return 'balance';
+    if (status === 'check_up') return 'check-up';
     return 'unpaid';
   };
 

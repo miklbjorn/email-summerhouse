@@ -47,7 +47,7 @@ export interface InvoiceRecord {
   account_to_pay_ACCOUNT_NUMBER: string | null;
   last_payment_date: string | null;
   items_json: string | null; // JSON array of items
-  status: 'unpaid' | 'paid' | 'no_payment_due';
+  status: 'unpaid' | 'paid' | 'no_payment_due' | 'check_up';
   paid_at: string | null;
   created_at: string;
   manually_edited_fields: string | null; // JSON array of field names that were manually edited
