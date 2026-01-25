@@ -15,19 +15,19 @@ export function Layout({ children }: Props) {
         >
           <defs>
             <linearGradient id="wave-gradient-1" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#1a2a1a" />
-              <stop offset="50%" stopColor="#2a3a2a" />
-              <stop offset="100%" stopColor="#1f2f1f" />
+              <stop offset="0%" stopColor="#252528" />
+              <stop offset="50%" stopColor="#2d2d30" />
+              <stop offset="100%" stopColor="#252528" />
             </linearGradient>
             <linearGradient id="wave-gradient-2" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#2a1f1f" />
-              <stop offset="50%" stopColor="#3a2a2a" />
-              <stop offset="100%" stopColor="#2f1f1f" />
+              <stop offset="0%" stopColor="#2a2a2d" />
+              <stop offset="50%" stopColor="#323235" />
+              <stop offset="100%" stopColor="#2a2a2d" />
             </linearGradient>
             <linearGradient id="wave-gradient-3" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#1f1f2a" />
-              <stop offset="50%" stopColor="#2a2a3a" />
-              <stop offset="100%" stopColor="#1f1f2f" />
+              <stop offset="0%" stopColor="#222225" />
+              <stop offset="50%" stopColor="#2a2a2d" />
+              <stop offset="100%" stopColor="#222225" />
             </linearGradient>
           </defs>
           <path
