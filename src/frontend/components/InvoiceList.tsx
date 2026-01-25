@@ -11,7 +11,7 @@ interface Props {
 
 type SortColumn = 'supplier' | 'amount' | 'account_balance' | 'invoice_id' | 'last_payment_date' | 'status' | 'created_at';
 type SortDirection = 'asc' | 'desc';
-type StatusFilter = 'all' | 'unpaid' | 'paid' | 'no_payment_due';
+type StatusFilter = 'all' | 'unpaid' | 'paid' | 'no_payment_due' | 'check_up';
 
 function formatCurrency(amount: number | null, currency: string | null): string {
   if (amount === null) return '-';
@@ -137,6 +137,7 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
             <option value="unpaid">Unpaid</option>
             <option value="paid">Paid</option>
             <option value="no_payment_due">All good</option>
+            <option value="check_up">Check up!</option>
           </select>
         </div>
         <div className="filter-group">
@@ -211,8 +212,16 @@ export function InvoiceList({ invoices, loading, onSelect, onDelete }: Props) {
                 <td>{invoice.invoice_id || '-'}</td>
                 <td>{formatDate(invoice.last_payment_date)}</td>
                 <td>
-                  <span className={`status-badge ${invoice.status === 'paid' ? 'paid' : (invoice.status === 'no_payment_due' ? 'balance' : 'unpaid')}`}>
-                    {invoice.status === 'paid' ? 'Paid' : (invoice.status === 'no_payment_due' ? 'All good' : 'Unpaid')}
+                  <span className={`status-badge ${
+                    invoice.status === 'paid' ? 'paid' :
+                    invoice.status === 'no_payment_due' ? 'balance' :
+                    invoice.status === 'check_up' ? 'check-up' :
+                    'unpaid'
+                  }`}>
+                    {invoice.status === 'paid' ? 'Paid' :
+                     invoice.status === 'no_payment_due' ? 'All good' :
+                     invoice.status === 'check_up' ? 'Check up!' :
+                     'Unpaid'}
                   </span>
                 </td>
                 <td>{formatDate(invoice.created_at)}</td>

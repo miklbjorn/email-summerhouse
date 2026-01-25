@@ -1,4 +1,4 @@
-export type InvoiceStatus = 'unpaid' | 'paid' | 'no_payment_due';
+export type InvoiceStatus = 'unpaid' | 'paid' | 'no_payment_due' | 'check_up';
 
 export interface InvoiceListItem {
   id: number;
@@ -30,4 +30,12 @@ export interface InvoiceDetail extends InvoiceListItem {
   account_to_pay_ACCOUNT_NUMBER: string | null;
   items_json: string | null;
   source_files: SourceFile[];
+}
+
+export interface InvoiceComment {
+  id: number;
+  invoice_id: number;
+  content: string;
+  created_at: string;
+  updated_at: string;
 }

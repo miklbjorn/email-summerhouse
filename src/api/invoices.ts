@@ -4,7 +4,7 @@
 
 import type { D1Database, InvoiceRecord, SourceFileRecord } from '../utils/database';
 
-export type InvoiceStatus = 'unpaid' | 'paid' | 'no_payment_due';
+export type InvoiceStatus = 'unpaid' | 'paid' | 'no_payment_due' | 'check_up';
 
 export interface InvoiceListItem {
   id: number;
