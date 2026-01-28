@@ -12,6 +12,7 @@
 import * as PostalMime from 'postal-mime';
 import {
   getAllowedSenders,
+  getAuthorizedReplyAddress,
   extractMessageId,
   extractEmailAddresses,
   processAttachments,
@@ -57,15 +58,17 @@ export default {
     const messageId = extractMessageId(email, message.headers);
     const fromAddress = email.from?.address ?? "<from-address-missing>";
     
-    let replyMessage: EmailMessage | null = null; 
+    let replyMessage: EmailMessage | null = null;
+    let replyAddress: string | null = null;
 
     try {
-      // Step 1: Check that the email is sent from an allowed email address
+      // Step 1: Check that the email is from an allowed sender or forwarded via an allowed address
       const allowedSenders = getAllowedSenders(env);
+      replyAddress = getAuthorizedReplyAddress(fromAddress, message.headers, allowedSenders);
 
-      if (!allowedSenders.includes(fromAddress)) {
+      if (!replyAddress) {
         console.log({
-          message: `Blocked email from unauthorized sender. Sender ${fromAddress}, not in allowed list: ${allowedSenders.join(', ')}.`,
+          message: `Blocked email from unauthorized sender. Sender ${fromAddress}, Delivered-To: ${message.headers.get('Delivered-To') ?? 'N/A'}, not in allowed list: ${allowedSenders.join(', ')}.`,
           email: email,
         });
         message.setReject('Unauthorized sender');
@@ -161,7 +164,7 @@ export default {
       const originalMessageId = message.headers.get('Message-ID');
       replyMessage = generateReplyEmail(
         originalMessageId,
-        fromAddress || 'unknown',
+        replyAddress,
         extraction
       );
 
@@ -179,7 +182,7 @@ export default {
         const errorMsg = error instanceof Error ? error.message : String(error);
         replyMessage = generateErrorReplyEmail(
           originalMessageId,
-          fromAddress,
+          replyAddress || fromAddress,
           errorMsg
         );
       } catch (replyError) {

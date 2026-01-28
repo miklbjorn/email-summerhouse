@@ -24,6 +24,32 @@ export function getAllowedSenders(env: EmailEnv): string[] {
 }
 
 /**
+ * Check if the email is authorized, either directly from an allowed sender
+ * or forwarded via an allowed address (detected via Delivered-To header).
+ *
+ * Returns the address to reply to: the forwarding address if forwarded,
+ * otherwise the original sender.
+ */
+export function getAuthorizedReplyAddress(
+  fromAddress: string,
+  messageHeaders: Headers,
+  allowedSenders: string[]
+): string | null {
+  // Direct sender is allowed
+  if (allowedSenders.includes(fromAddress)) {
+    return fromAddress;
+  }
+
+  // Check if the email was forwarded via an allowed address
+  const deliveredTo = messageHeaders.get('Delivered-To');
+  if (deliveredTo && allowedSenders.includes(deliveredTo)) {
+    return deliveredTo;
+  }
+
+  return null;
+}
+
+/**
  * Extract message ID from parsed email and message headers
  * Tries multiple sources in order of preference
  */
