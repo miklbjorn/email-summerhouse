@@ -55,7 +55,7 @@ export default {
     const messageId = extractMessageId(email, message.headers);
     const fromAddress = message.from;
 
-    console.log(`Received email with Message-ID: ${messageId} from: ${fromAddress}`);
+    console.log(`Received email from: ${fromAddress} with Message-ID: ${messageId}.`);
 
     let replyMessage: EmailMessage | null = null;
     let replyAddress: string | null = null;

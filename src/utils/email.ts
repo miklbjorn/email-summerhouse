@@ -49,7 +49,7 @@ export function getAuthorizedReplyAddress(
 
   const baseAddress = stripPlusSuffix(fromAddress);
   if (baseAddress !== fromAddress && allowedSenders.includes(baseAddress)) {
-    return baseAddress;
+    return fromAddress;
   }
 
   return null;
