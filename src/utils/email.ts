@@ -24,26 +24,32 @@ export function getAllowedSenders(env: EmailEnv): string[] {
 }
 
 /**
- * Check if the email is authorized, either directly from an allowed sender
- * or forwarded via an allowed address (detected via Delivered-To header).
+ * Strip the +suffix from an email address.
+ * e.g. "user+tag@domain.com" → "user@domain.com"
+ * Handles forwarded addresses like "mikl.bjorn+caf_=foo=bar@gmail.com"
+ */
+export function stripPlusSuffix(address: string): string {
+  return address.replace(/\+[^@]*@/, '@');
+}
+
+/**
+ * Check if the sender is authorized by matching against allowed senders.
+ * Compares both the full address and the base address (with +suffix stripped)
+ * to support forwarded emails where the provider adds a +suffix.
  *
- * Returns the address to reply to: the forwarding address if forwarded,
- * otherwise the original sender.
+ * Returns the matching allowed sender address, or null if unauthorized.
  */
 export function getAuthorizedReplyAddress(
   fromAddress: string,
-  messageHeaders: Headers,
   allowedSenders: string[]
 ): string | null {
-  // Direct sender is allowed
   if (allowedSenders.includes(fromAddress)) {
     return fromAddress;
   }
 
-  // Check if the email was forwarded via an allowed address
-  const deliveredTo = messageHeaders.get('Delivered-To');
-  if (deliveredTo && allowedSenders.includes(deliveredTo)) {
-    return deliveredTo;
+  const baseAddress = stripPlusSuffix(fromAddress);
+  if (baseAddress !== fromAddress && allowedSenders.includes(baseAddress)) {
+    return baseAddress;
   }
 
   return null;
