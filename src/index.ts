@@ -130,6 +130,12 @@ export default {
       // Pass individual markdown files - extraction function will concatenate as needed
       const extraction = await extractInvoiceInfo(env.AI, markdownFiles);
 
+      // Check if the email is actually an invoice
+      if (!extraction.isInvoice) {
+        console.log(`Email from ${fromAddress} with subject "${email.subject}" classified as not an invoice. Skipping.`);
+        return;
+      }
+
       const goldData: GoldLayerData = {
         messageId,
         extractedData: extraction,
