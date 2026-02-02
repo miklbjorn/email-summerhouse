@@ -52,14 +52,10 @@ export default {
     const rawEmail = new Response(message.raw);
     const rawEmailBuffer = await rawEmail.arrayBuffer();
     const email = await parser.parse(rawEmailBuffer);
-    const parser2 = new PostalMime.default();
-
-    const email2 = await parser2.parse(rawEmailBuffer);
     const messageId = extractMessageId(email, message.headers);
-    const fromAddress = email.from?.address ?? "<from-address-missing>";
-    const fromAddress2 = message.from ?? "<from-address-missing>";
-    
-    console.log(`Received email with Message-ID: ${messageId} from: ${fromAddress}/${fromAddress2}`);
+    const fromAddress = message.from;
+
+    console.log(`Received email with Message-ID: ${messageId} from: ${fromAddress}`);
 
     let replyMessage: EmailMessage | null = null;
     let replyAddress: string | null = null;
@@ -67,11 +63,11 @@ export default {
     try {
       // Step 1: Check that the email is from an allowed sender or forwarded via an allowed address
       const allowedSenders = getAllowedSenders(env);
-      replyAddress = getAuthorizedReplyAddress(fromAddress, message.headers, allowedSenders);
+      replyAddress = getAuthorizedReplyAddress(fromAddress, allowedSenders);
 
       if (!replyAddress) {
         console.log({
-          message: `Blocked email from unauthorized sender. Sender ${fromAddress}, Delivered-To: ${message.headers.get('Delivered-To') ?? 'N/A'}, not in allowed list: ${allowedSenders.join(', ')}.`,
+          message: `Blocked email from unauthorized sender. Sender ${fromAddress}, not in allowed list: ${allowedSenders.join(', ')}.`,
           email: email,
         });
         message.setReject('Unauthorized sender');
