@@ -57,7 +57,10 @@ export default {
     const email2 = await parser2.parse(rawEmailBuffer);
     const messageId = extractMessageId(email, message.headers);
     const fromAddress = email.from?.address ?? "<from-address-missing>";
+    const fromAddress2 = message.from ?? "<from-address-missing>";
     
+    console.log(`Received email with Message-ID: ${messageId} from: ${fromAddress}/${fromAddress2}`);
+
     let replyMessage: EmailMessage | null = null;
     let replyAddress: string | null = null;
 
