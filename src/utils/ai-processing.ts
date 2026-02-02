@@ -7,6 +7,7 @@
 import type { SilverLayerData, GoldLayerData } from './storage';
 
 export interface InvoiceExtraction {
+  isInvoice: boolean;
   items: string[];
   supplier: string | null;
   amount: number | null;
@@ -138,9 +139,10 @@ export async function extractInvoiceInfo(
   
   const sourceFiles = markdownContents.map((file) => file.filename);
   
-  const prompt = `Extract the following information from this invoice document and return it as JSON:
+  const prompt = `Analyze this email/document and extract invoice information. Return as JSON.
 
-Required fields (all can be null if not found):
+Required fields:
+- isInvoice: boolean - true if this is an invoice, bill, credit note, or payment request. Credit notes and documents with a positive credit balance ARE invoices. false if it is a newsletter, notification, marketing email, or any other non-invoice content.
 - items: array of strings describing what items/services are covered (can be empty array)
 - supplier: the name of the supplier/company that sent the invoice
 - amount: the total amount to pay (as a number, null if nothing to pay). IMPORTANT: If this is a credit note or there is a credit balance ("belopp tillgodo", "tilgodehavende", etc.), set amount to null and put the credit in accountBalance instead. Never return a negative amount.
@@ -159,6 +161,7 @@ ${combinedContent}
 
 Return ONLY valid JSON in this exact format:
 {
+  "isInvoice": true,
   "items": ["item1", "item2"],
   "supplier": "Supplier Name" or null,
   "amount": 1234.56 or null,
@@ -196,6 +199,7 @@ Return ONLY valid JSON in this exact format:
     if (jsonMatch) {
       const extracted = JSON.parse(jsonMatch[0]);
       return {
+        isInvoice: extracted.isInvoice ?? true,
         items: extracted.items ?? [],
         supplier: extracted.supplier ?? null,
         amount: extracted.amount ?? null,
@@ -216,6 +220,7 @@ Return ONLY valid JSON in this exact format:
     console.error('Error extracting invoice info:', error);
     // Return default structure on error
     return {
+      isInvoice: true,
       items: [],
       supplier: null,
       amount: null,

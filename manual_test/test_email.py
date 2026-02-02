@@ -156,3 +156,28 @@ if __name__ == '__main__':
     )
     print(f"Status: {response.status_code}")
     print(f"Response: {response.text}")
+
+    # Non-invoice email (newsletter) - should be classified as not an invoice and skipped
+#     print("Sending non-invoice newsletter email...")
+#     response = create_and_send_email(
+#         from_email="sender@example.com",
+#         to_email="recipient@example.com",
+#         subject="Weekly Newsletter - Top 10 Tips for Spring Gardening",
+#         body="""Hi there,
+
+# Welcome to this week's newsletter! Here are our top picks:
+
+# 1. How to prepare your garden for spring
+# 2. Best fertilizers for indoor plants
+# 3. Upcoming community events in your area
+
+# Don't forget to check out our blog for more articles.
+
+# Best regards,
+# The Garden Weekly Team
+
+# Unsubscribe: https://example.com/unsubscribe
+# """,
+#     )
+#     print(f"Status: {response.status_code}")
+#     print(f"Response: {response.text}")
