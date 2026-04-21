@@ -29,6 +29,7 @@ import {
 import {
   processEmailAndAttachmentsToMarkdown,
   extractInvoiceInfo,
+  getVisionGatewayConfig,
 } from './utils/ai-processing';
 import {
   initializeDatabase,
@@ -112,7 +113,8 @@ export default {
         env.AI,
         email.text,
         email.html,
-        attachmentData
+        attachmentData,
+        getVisionGatewayConfig(env)
       );
 
       // Persist each markdown file individually to silver layer
@@ -287,7 +289,8 @@ async function handleApiRequest(
         env.AI,
         undefined,
         undefined,
-        attachments
+        attachments,
+        getVisionGatewayConfig(env)
       );
 
       // Extract invoice info
