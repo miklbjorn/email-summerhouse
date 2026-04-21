@@ -11,6 +11,7 @@ import email.utils
 import mimetypes
 import os
 from email.mime.application import MIMEApplication
+from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import List, Optional
@@ -92,9 +93,15 @@ def create_and_send_email(
                 else:
                     content_type = 'application/octet-stream'
             
-            # Read file and attach
+            # Read file and attach using the correct MIME class so the
+            # top-level type matches (image/* vs application/*).
             with open(file_path, 'rb') as f:
-                part = MIMEApplication(f.read(), _subtype=content_type.split('/')[1])
+                file_bytes = f.read()
+            major, _, minor = content_type.partition('/')
+            if major == 'image':
+                part = MIMEImage(file_bytes, _subtype=minor)
+            else:
+                part = MIMEApplication(file_bytes, _subtype=minor)
             
             part.add_header(
                 'Content-Disposition',
@@ -151,8 +158,7 @@ if __name__ == '__main__':
         to_email="recipient@example.com",
         subject="Invoice attached",
         body="Please find the invoice and photo attached.",
-        # attachments=["./test_data/test_invoice_1.pdf", "./test_data/test_invoice_1.jpg"]
-        attachments=["./test_data/test_invoice_1.pdf"]
+        attachments=["./test_data/test_invoice_1.jpg"]
     )
     print(f"Status: {response.status_code}")
     print(f"Response: {response.text}")

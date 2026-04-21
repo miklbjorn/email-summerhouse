@@ -52,6 +52,7 @@
 		}
 	],
 	"vars": {
-		"ENVIRONMENT": "production"
+		"ENVIRONMENT": "production",
+		"AI_GATEWAY_ID": "bjrk-invoices"
 	}
 }
