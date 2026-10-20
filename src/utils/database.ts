@@ -51,6 +51,7 @@ export interface InvoiceRecord {
   paid_at: string | null;
   created_at: string;
   manually_edited_fields: string | null; // JSON array of field names that were manually edited
+  reminder_sent_at: string | null; // When the due-soon reminder was sent
 }
 
 export interface SourceFileRecord {
