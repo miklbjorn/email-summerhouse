@@ -7,6 +7,8 @@
  * 3. Convert attachments to markdown using AI (silver layer)
  * 4. Extract invoice info using LLM (gold layer + D1 database)
  * 5. Send reply email with summary
+ *
+ * A daily cron trigger also sends payment reminders for due-soon and overdue invoices.
  */
 
 import * as PostalMime from 'postal-mime';
@@ -36,6 +38,7 @@ import {
   insertInvoice,
 } from './utils/database';
 import { generateReplyEmail, generateErrorReplyEmail } from './utils/email-replies';
+import { sendDailyReminder } from './utils/reminders';
 import { getAllInvoices, getInvoiceById, updateInvoice, deleteInvoice, type InvoiceUpdateRequest } from './api/invoices';
 import { getCommentsByInvoiceId, createComment, updateComment, deleteComment, type CreateCommentRequest, type UpdateCommentRequest } from './api/comments';
 import { serveFileFromR2 } from './api/files';
@@ -211,6 +214,10 @@ export default {
         console.warn('No reply message constructed; skipping reply email.');
       }
     }
+  },
+
+  async scheduled(controller: ScheduledController, env: any, ctx: ExecutionContext) {
+    await sendDailyReminder(env.DB, env.EMAIL, env.REMINDER_RECIPIENT);
   },
 
   async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
