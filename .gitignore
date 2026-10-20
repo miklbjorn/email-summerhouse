@@ -174,3 +174,6 @@ eval/data/*.pdf
 eval/eval_ground_truth.csv
 eval/results/*.csv
 eval/markdown/*.md
+
+# Cloudflare API token (sensitive)
+.api-token-for-access
